@@ -4,6 +4,9 @@ NextFlit/
 ├── build/                     # Các tệp được tạo ra khi build
 ├── ios/                       # Mã nguồn riêng cho iOS
 ├── lib/                       # Mã nguồn Flutter/Dart
+│   ├── routes/ 			   # Chứa các route
+│   │   ├── routes.dart        # App route constant
+│   │   └──  app_router.dart   # App Router config
 │   ├── blocs/                 # Chứa các BLoC (business logic components)
 │   │   ├── authentication_bloc.dart # Ví dụ về một BLoC
 │   │   └── ...                # Các tệp BLoC khác

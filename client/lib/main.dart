@@ -1,16 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:nextflix/constants/routes.dart';
+import 'package:flutter/services.dart';
+import 'package:nextflix/constants/app_colors.dart';
+import 'package:nextflix/routes/app_router.dart';
 import 'package:nextflix/firebase_options.dart';
 import 'package:nextflix/constants/app_constants.dart';
-import 'package:nextflix/screens/home_page.dart';
-import 'package:nextflix/screens/login_screen.dart';
-import 'package:nextflix/screens/register_screen.dart';
-
-import 'screens/splashscreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Ẩn thanh trạng thái và thanh điều hướng hệ thống
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top],
+  );
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -20,13 +24,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.red,
-        scaffoldBackgroundColor: const Color(0xFF1A1A1A),
+        scaffoldBackgroundColor: AppColors.primary[950],
         textTheme: const TextTheme(
           titleLarge: TextStyle(
             fontSize: 18,
@@ -36,13 +40,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.white),
         ),
       ),
-      initialRoute: Routes.splashScreen,
-      routes: {
-        Routes.loginScreen: (context) => const LoginPage(),
-        Routes.splashScreen: (context) => const SplashScreen(),
-        Routes.resigterScreen: (context) => const RegisterPage(),
-        Routes.homeScreen: (context) => const HomePage(),
-      },
+      routerConfig: AppRouter.appRouter,
     );
   }
 }
