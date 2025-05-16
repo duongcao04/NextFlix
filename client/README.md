@@ -16,6 +16,11 @@ NextFlit/
 │   ├── widgets/               # Các Widget tái sử dụng
 │   ├── services/              # Dịch vụ API hoặc nguồn dữ liệu
 │   ├── utils/                 # Các hàm tiện ích
+│   ├── constants/                 # Chứa các constant dùng chung
+│   │   ├── app_constants.dart     # Các hằng số chung cho toàn app
+│   │   ├── api_endpoints.dart     # Định nghĩa các endpoint API
+│   │   ├── colors.dart            # Các mã màu dùng chung
+│   │   └── strings.dart           # Các chuỗi văn bản tĩnh
 │   └── main.dart              # Điểm vào chính của ứng dụng
 ├── test/                      # Các bài kiểm tra đơn vị và widget
 │   └── blocs/                 # Kiểm tra các BLoC

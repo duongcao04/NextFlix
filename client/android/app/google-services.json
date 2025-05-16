@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "216107978984",
+    "project_id": "nextflix-1b121",
+    "storage_bucket": "nextflix-1b121.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216107978984:android:3fbc81aa0ef8e5641a795d",
+        "android_client_info": {
+          "package_name": "com.example.nextflit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216107978984-v104266v7rvevr232h5rj2psodftel6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nextflit",
+            "certificate_hash": "8baf23d8d0c328cbefd936931e90a64f41356569"
+          }
+        },
+        {
+          "client_id": "216107978984-4g3pntb1bvmci4r93lu9cl8nt5hkhaar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWxi009ybetDAyrTTyw5Sel4OtzgXVti4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216107978984-4g3pntb1bvmci4r93lu9cl8nt5hkhaar.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "216107978984-a5ut8ua9knjpkame4pn0vspopn5hiuf3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.nextflit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
