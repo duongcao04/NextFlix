@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Banner;
+import 'package:nextflix/routes/routes.dart';
 import '../data/mock_data.dart';
 import '../widgets/banner.dart';
 import '../widgets/filter_buttons.dart';
@@ -6,6 +7,7 @@ import '../widgets/movie_section.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/header.dart';
 import '../widgets/footer.dart';
+import 'package:nextflix/widgets/bottom_app_bar.dart' as custom;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

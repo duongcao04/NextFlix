@@ -31,10 +31,15 @@ class MovieCard extends StatelessWidget {
                   top: 5,
                   left: 5,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
                     color: Colors.black54,
                     child: Text(
-                      movie.latestEpisode != 'N/A' ? 'Tập ${movie.latestEpisode}' : 'N/A',
+                      movie.latestEpisode != 'N/A'
+                          ? 'Tập ${movie.latestEpisode}'
+                          : 'N/A',
                       style: const TextStyle(fontSize: 10, color: Colors.white),
                     ),
                   ),

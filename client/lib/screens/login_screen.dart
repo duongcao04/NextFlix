@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:nextflix/constants/routes.dart';
+import 'package:nextflix/routes/routes.dart';
 import 'package:nextflix/screens/forgot_password.dart';
 import 'package:nextflix/screens/register_screen.dart';
 import 'package:nextflix/services/firebase_service.dart';
