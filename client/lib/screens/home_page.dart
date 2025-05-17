@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart' hide Banner;
-import 'package:nextflix/routes/routes.dart';
 import '../data/mock_data.dart';
 import '../widgets/banner.dart';
-import '../widgets/filter_buttons.dart';
+import '../widgets/filter_bar_delegate.dart';
 import '../widgets/movie_section.dart';
-import '../widgets/app_drawer.dart';
-import '../widgets/header.dart';
 import '../widgets/footer.dart';
-import 'package:nextflix/widgets/bottom_app_bar.dart' as custom;
+import 'topic_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,37 +12,167 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(
-        onMenuPressed: () {
-          Scaffold.of(context).openDrawer();
-        },
-      ),
-      drawer: const AppDrawer(),
-      body: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight:
-              MediaQuery.of(context).size.height -
-              kToolbarHeight -
-              MediaQuery.of(context).padding.top,
-        ),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Banner(movie: MockData.featuredMovie),
-              const FilterButtons(),
-              MovieSection(
-                title: 'Phim Hàn Quốc mới',
-                movies: MockData.koreanMovies,
-              ),
-              MovieSection(
-                title: 'Phim Trung Quốc mới',
-                movies: MockData.chineseMovies,
-              ),
-              const FooterWidget(),
-            ],
+      body: CustomScrollView(
+        slivers: [
+          // 🔻 Header
+          SliverAppBar(
+            pinned: true,
+            backgroundColor: Colors.black,
+            elevation: 0,
+            titleSpacing: 0,
+            title: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Image.asset('assets/images/logo.png', height: 48),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'RoPhim',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Phim hay',
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
+
+          // 🔻 Thanh lọc thông minh
+          SliverPersistentHeader(pinned: false, delegate: FilterBarDelegate()),
+
+          // 🔻 Nội dung chính
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 🎬 Banner nổi bật
+                Banner(
+                  movies: [
+                    MockData.featuredMovie,
+                    ...MockData.koreanMovies,
+                    ...MockData.chineseMovies,
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // 🌟 "Bạn đang quan tâm gì?"
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Bạn đang quan tâm gì?',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => TopicScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 12),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildInterestCard('Marvel'),
+                            _buildInterestCard('Keo Lỳ Slayyy'),
+                            _buildInterestCard('Sitcom'),
+                            _buildInterestCard('4K'),
+                            _buildInterestCard('Lồng Tiếng Cực Mạnh'),
+                            _buildInterestCard('Đỉnh Nóc'),
+                            _buildInterestCard('Xuyên Không'),
+                            _buildInterestCard('Cổ Trang'),
+                            _buildInterestCard('9x'),
+                            _buildInterestCard('Tham Vọng'),
+                            _buildInterestCard('Chữa Lành'),
+                            _buildInterestCard('Phù Thủy'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // 📺 Mục phim Hàn
+                MovieSection(
+                  title: 'Phim Hàn Quốc mới',
+                  movies: MockData.koreanMovies,
+                ),
+
+                const SizedBox(height: 24),
+
+                // 📺 Mục phim Trung
+                MovieSection(
+                  title: 'Phim Trung Quốc mới',
+                  movies: MockData.chineseMovies,
+                ),
+
+                const SizedBox(height: 32),
+
+                // 👣 Chân trang
+                const FooterWidget(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 🎨 Thẻ chủ đề gradient
+  static Widget _buildInterestCard(String text) {
+    return Container(
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFf857a6), Color(0xFFFF5858)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

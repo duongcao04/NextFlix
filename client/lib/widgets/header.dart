@@ -1,40 +1,39 @@
 import 'package:flutter/material.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback onMenuPressed;
-
-  const Header({super.key, required this.onMenuPressed});
+  const Header({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.black,
-      leading: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: onMenuPressed,
-      ),
+      automaticallyImplyLeading: false,
+      titleSpacing: 0,
       title: Row(
         children: [
-          // Logo bên trái
-          Image.asset(
-            'assets/images/logo.png',
-            height: 32,
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 48,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
               Text(
-                'NextFlix',
+                'RoPhim',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
               Text(
-                'Phim hay',
+                'Phim hay cỡ rổ',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: Colors.grey,
                 ),
               ),
@@ -42,14 +41,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      centerTitle: false,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-          },
-        ),
-      ],
+      elevation: 0,
     );
   }
 
