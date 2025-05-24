@@ -1,108 +1,582 @@
-<!DOCTYPE html><html><head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoPhim - Xem Phim Online Miễn Phí</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            text-decoration: none;
+        }
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="nextflit">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
+        .nav-menu a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
 
-  <title>nextflit</title>
-  <link rel="manifest" href="manifest.json">
-  <style id="splash-screen-style">
-    html {
-      height: 100%
-    }
+        .nav-menu a:hover {
+            color: #ff6b6b;
+        }
 
-    body {
-      margin: 0;
-      min-height: 100%;
-      background-color: #ffffff;
-          background-size: 100% 100%;
-    }
+        .search-container {
+            position: relative;
+        }
 
-    .center {
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-    }
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid #333;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            width: 250px;
+        }
 
-    .contain {
-      display:block;
-      width:100%; height:100%;
-      object-fit: contain;
-    }
+        .search-box::placeholder {
+            color: #ccc;
+        }
 
-    .stretch {
-      display:block;
-      width:100%; height:100%;
-    }
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
 
-    .cover {
-      display:block;
-      width:100%; height:100%;
-      object-fit: cover;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
 
-    .bottom {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      -ms-transform: translate(-50%, 0);
-      transform: translate(-50%, 0);
-    }
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23222" width="1200" height="600"/><text x="600" y="300" text-anchor="middle" fill="%23666" font-size="48">Hero Banner</text></svg>');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3rem;
+            border-radius: 10px;
+        }
 
-    .bottomLeft {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
+        .hero-content {
+            text-align: center;
+        }
 
-    .bottomRight {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-    }
-  </style>
-  <script id="splash-screen-script">
-    function removeSplashFromWeb() {
-      document.getElementById("splash")?.remove();
-      document.getElementById("splash-branding")?.remove();
-      document.body.style.background = "transparent";
-    }
-  </script>
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn-play {
+            background: #ff6b6b;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Movie Sections */
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #ff6b6b;
+            border-left: 4px solid #ff6b6b;
+            padding-left: 1rem;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.2);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(45deg, #333, #555);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 107, 107, 0.9);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .movie-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .movie-info {
+            padding: 1rem;
+        }
+
+        .movie-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .movie-meta {
+            font-size: 0.8rem;
+            color: #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quality-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid #333;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer p {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ff6b6b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .categories {
+                justify-content: center;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
 </head>
+
 <body>
-  <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
-  </picture>
-  <script src="flutter_bootstrap.js" async=""></script>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">RoPhim</a>
+            <ul class="nav-menu">
+                <li><a href="#home">Trang chủ</a></li>
+                <li><a href="phimLe.html">Phim lẻ</a></li>
+                <li><a href="#series">Phim bộ</a></li>
+                <li><a href="#cartoon">Hoạt hình</a></li>
+                <li><a href="#tv-shows">TV Show</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
+            </div>
+        </nav>
+    </header>
 
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Xem Phim Online Miễn Phí</h1>
+                    <p>Hàng ngàn bộ phim chất lượng cao, cập nhật liên tục</p>
+                    <a href="#" class="btn-play">▶ Xem ngay</a>
+                </div>
+            </section>
 
-</body></html>
+            <!-- Categories -->
+            <div class="categories">
+                <a href="#" class="category-btn active">Tất cả</a>
+                <a href="#" class="category-btn">Hành động</a>
+                <a href="#" class="category-btn">Tình cảm</a>
+                <a href="#" class="category-btn">Hài hước</a>
+                <a href="#" class="category-btn">Kinh dị</a>
+                <a href="#" class="category-btn">Sci-Fi</a>
+                <a href="#" class="category-btn">Anime</a>
+            </div>
+
+            <!-- New Movies Section -->
+            <section class="section">
+                <h2 class="section-title">Phim mới cập nhật</h2>
+                <div class="movie-grid" id="newMovies">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Popular Movies Section -->
+            <section class="section">
+                <h2 class="section-title">Phim hot</h2>
+                <div class="movie-grid" id="popularMovies">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </section>
+
+            <!-- TV Series Section -->
+            <section class="section">
+                <h2 class="section-title">Phim bộ</h2>
+                <div class="movie-grid" id="tvSeries">
+                    <!-- Movies will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Về chúng tôi</a>
+                <a href="#">Liên hệ</a>
+                <a href="#">Chính sách</a>
+                <a href="#">DMCA</a>
+            </div>
+            <p>&copy; 2024 RoPhim. Tất cả quyền được bảo lưu.</p>
+            <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample movie data
+        const movies = {
+            new: [
+                { title: "Avatar: The Way of Water", year: "2024", quality: "HD", type: "Phim lẻ" },
+                { title: "Black Panther: Wakanda Forever", year: "2024", quality: "CAM", type: "Phim lẻ" },
+                { title: "Top Gun: Maverick", year: "2024", quality: "HD", type: "Phim lẻ" },
+                { title: "Doctor Strange 2", year: "2024", quality: "HD", type: "Phim lẻ" },
+                { title: "The Batman", year: "2024", quality: "HD", type: "Phim lẻ" },
+                { title: "Spider-Man: No Way Home", year: "2024", quality: "HD", type: "Phim lẻ" },
+                { title: "Dune", year: "2024", quality: "HD", type: "Phim lẻ" },
+                { title: "Fast & Furious 10", year: "2024", quality: "CAM", type: "Phim lẻ" }
+            ],
+            popular: [
+                { title: "Squid Game", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Stranger Things 4", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Money Heist", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "The Witcher", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Ozark", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Breaking Bad", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Game of Thrones", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "The Crown", year: "2024", quality: "HD", type: "Phim bộ" }
+            ],
+            series: [
+                { title: "House of the Dragon", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "The Rings of Power", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Euphoria", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Wednesday", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "The Bear", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Better Call Saul", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "Succession", year: "2024", quality: "HD", type: "Phim bộ" },
+                { title: "The Last of Us", year: "2024", quality: "HD", type: "Phim bộ" }
+            ]
+        };
+
+        // Function to create movie card
+        function createMovieCard(movie) {
+            return `
+                <div class="movie-card" onclick="playMovie('${movie.title}')">
+                    <div class="movie-poster">
+                        <div class="play-overlay">▶</div>
+                        ${movie.title}
+                    </div>
+                    <div class="movie-info">
+                        <div class="movie-title">${movie.title}</div>
+                        <div class="movie-meta">
+                            <span>${movie.year} • ${movie.type}</span>
+                            <span class="quality-badge">${movie.quality}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to load movies
+        function loadMovies() {
+            const newMoviesContainer = document.getElementById('newMovies');
+            const popularMoviesContainer = document.getElementById('popularMovies');
+            const tvSeriesContainer = document.getElementById('tvSeries');
+
+            newMoviesContainer.innerHTML = movies.new.map(createMovieCard).join('');
+            popularMoviesContainer.innerHTML = movies.popular.map(createMovieCard).join('');
+            tvSeriesContainer.innerHTML = movies.series.map(createMovieCard).join('');
+        }
+
+        // Function to handle movie play
+        function playMovie(title) {
+            alert(`Đang phát: ${title}\n\nTính năng phát phim sẽ được phát triển!`);
+        }
+
+        // Search functionality
+        document.querySelector('.search-box').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    alert(`Tìm kiếm: "${query}"\n\nTính năng tìm kiếm sẽ được phát triển!`);
+                }
+            }
+        });
+
+        // Category buttons functionality
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all buttons
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Show loading animation
+                document.querySelectorAll('.movie-grid').forEach(grid => {
+                    grid.classList.add('loading');
+                });
+                
+                // Simulate loading delay
+                setTimeout(() => {
+                    document.querySelectorAll('.movie-grid').forEach(grid => {
+                        grid.classList.remove('loading');
+                    });
+                    
+                    alert(`Đã chọn thể loại: ${this.textContent}\n\nTính năng lọc theo thể loại sẽ được phát triển!`);
+                }, 500);
+            });
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(0, 0, 0, 0.95)';
+            } else {
+                header.style.background = 'rgba(0, 0, 0, 0.9)';
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMovies();
+            
+            // Add some entrance animations
+            setTimeout(() => {
+                document.querySelectorAll('.movie-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        card.style.transition = 'opacity 0.5s, transform 0.5s';
+                        
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 50);
+                    }, index * 100);
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
