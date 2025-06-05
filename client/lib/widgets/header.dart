@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nextflix/constants/app_colors.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
   const Header({super.key});
@@ -6,45 +7,19 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.blend(
+        AppColors.darkBackground,
+        Colors.transparent,
+        1,
+      ),
+      centerTitle: true,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
-      title: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: Image.asset(
-              'assets/images/logo.png',
-              height: 48,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'RoPhim',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Phim hay cỡ rổ',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      title: Row(children: [Text('a')]),
       elevation: 0,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(80);
 }

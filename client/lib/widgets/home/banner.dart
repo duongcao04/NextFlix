@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/movie_model.dart';
+import 'package:nextflix/models/movie_model.dart';
 
 class Banner extends StatefulWidget {
   final List<Movie> movies;
@@ -47,19 +47,25 @@ class _BannerState extends State<Banner> {
             },
             itemBuilder: (context, index) {
               final movie = widget.movies[index];
-              double pageOffset = ((_pageController.page ?? _currentIndex.toDouble()) - index.toDouble());
+              double pageOffset =
+                  ((_pageController.page ?? _currentIndex.toDouble()) -
+                      index.toDouble());
 
               double scale = (1 - (pageOffset.abs() * 0.2)).clamp(0.85, 1.0);
               double tilt = pageOffset * 0.08;
 
               return Transform(
                 alignment: Alignment.center,
-                transform: Matrix4.identity()
-                  ..setEntry(3, 2, 0.001)
-                  ..rotateY(tilt)
-                  ..scale(scale),
+                transform:
+                    Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..rotateY(tilt)
+                      ..scale(scale),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
+                  ),
                   child: Column(
                     children: [
                       ClipRRect(
@@ -118,7 +124,10 @@ class _BannerState extends State<Banner> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow[700],
                   foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -132,7 +141,10 @@ class _BannerState extends State<Banner> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

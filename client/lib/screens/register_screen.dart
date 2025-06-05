@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nextflix/services/firebase_service.dart';
-import 'package:nextflix/widgets/textfile.dart';
+import 'package:nextflix/blocs/authentication_bloc.dart';
+import 'package:nextflix/widgets/textfield.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -110,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed:
-                    () => register(
+                    () => (
                       context,
                       emailController.text,
                       passwordController.text,

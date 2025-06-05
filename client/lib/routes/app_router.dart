@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nextflix/routes/bottomAppBar_router.dart';
+import 'package:nextflix/screens/login_screen.dart';
 
 import 'package:nextflix/screens/movie_detail_screen.dart';
 import 'package:nextflix/screens/account_screen.dart';
-import 'package:nextflix/screens/home_page.dart';
+import 'package:nextflix/screens/home_screen.dart';
 import 'package:nextflix/screens/search_screen.dart';
 import 'package:nextflix/screens/splash_screen.dart';
-import 'package:nextflix/widgets/auth_gate.dart';
-import 'package:nextflix/screens/login_screen.dart';
 import 'package:nextflix/screens/register_screen.dart';
 import 'routes.dart';
 
@@ -18,7 +17,7 @@ class AppRouter {
   static final shellNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter appRouter = GoRouter(
-    initialLocation: Routes.splashScreen,
+    initialLocation: Routes.splash,
     navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
     routes: [
@@ -31,22 +30,17 @@ class AppRouter {
         routes: [
           // Các màn hình có bottom bar
           GoRoute(
-            path: Routes.homeScreen,
+            path: Routes.home,
             name: 'home',
-            builder: (context, state) => const HomePage(),
+            builder: (context, state) => const HomeScreen(),
           ),
           GoRoute(
-            path: Routes.searchScreen,
+            path: Routes.search,
             name: 'search',
             builder: (context, state) => const SearchScreen(),
           ),
           GoRoute(
-            path: Routes.showtimesScreen,
-            name: 'showtimes',
-            builder: (context, state) => const AccountScreen(),
-          ),
-          GoRoute(
-            path: Routes.accountScreen,
+            path: Routes.account,
             name: 'account',
             builder: (context, state) => const AccountScreen(),
           ),
@@ -55,26 +49,21 @@ class AppRouter {
 
       // Các route không có bottom bar
       GoRoute(
-        path: Routes.splashScreen,
+        path: Routes.splash,
         name: 'splash',
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        path: Routes.authGate,
-        name: 'authGate',
-        builder: (context, state) => const AuthGate(),
-      ),
-      GoRoute(
-        path: Routes.loginScreen,
+        path: Routes.login,
         name: 'login',
         builder: (context, state) {
-          return LoginPage();
+          return LoginScreen();
         },
       ),
       GoRoute(
-        path: Routes.resigterScreen,
+        path: Routes.register,
         name: 'register',
-        builder: (context, state) => const RegisterPage(),
+        builder: (context, state) => const RegisterScreen(),
       ),
 
       GoRoute(

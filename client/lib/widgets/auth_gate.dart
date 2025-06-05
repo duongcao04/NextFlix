@@ -23,7 +23,7 @@ class AuthGate extends StatelessWidget {
         if (snapshot.hasData) {
           // Điều hướng rồi trả về widget tạm thời
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go(Routes.homeScreen);
+            context.go(Routes.home);
           });
           // Trả về màn hình chờ trong khi điều hướng
           return const Scaffold(
@@ -32,7 +32,7 @@ class AuthGate extends StatelessWidget {
         }
 
         // Xử lý khi chưa xác thực
-        return const LoginPage();
+        return const LoginScreen();
       },
     );
   }

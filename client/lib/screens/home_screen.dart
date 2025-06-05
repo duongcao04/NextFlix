@@ -1,53 +1,22 @@
 import 'package:flutter/material.dart' hide Banner;
+import 'package:nextflix/widgets/header.dart';
 import '../data/mock_data.dart';
-import '../widgets/banner.dart';
+import '../widgets/home/banner.dart';
 import '../widgets/filter_bar_delegate.dart';
 import '../widgets/movie_section.dart';
 import '../widgets/footer.dart';
 import 'topic_screen.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: Header(),
       body: CustomScrollView(
         slivers: [
-          // 🔻 Header
-          SliverAppBar(
-            pinned: true,
-            backgroundColor: Colors.black,
-            elevation: 0,
-            titleSpacing: 0,
-            title: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: Image.asset('assets/images/logo.png', height: 48),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'RoPhim',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      'Phim hay',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
           // 🔻 Thanh lọc thông minh
           SliverPersistentHeader(pinned: false, delegate: FilterBarDelegate()),
 

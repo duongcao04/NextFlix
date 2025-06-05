@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(const Duration(seconds: 2), () {
-      context.go(Routes.authGate);
+      context.go(Routes.home);
     });
   }
 
