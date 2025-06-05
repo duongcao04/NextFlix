@@ -8,7 +8,7 @@ class FilterBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Container(
-      color: Colors.black,
+      color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -42,9 +42,7 @@ class FilterBarDelegate extends SliverPersistentHeaderDelegate {
       selectedColor: Colors.white,
       backgroundColor: Colors.transparent,
       side: const BorderSide(color: Colors.white, width: 1),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       showCheckmark: false,
     );
@@ -57,5 +55,6 @@ class FilterBarDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => 60;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }

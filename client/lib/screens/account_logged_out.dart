@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nextflix/routes/app_router.dart';
+import 'package:nextflix/routes/routes.dart';
 
 class AccountLoggedOut extends StatelessWidget {
   const AccountLoggedOut({super.key});
@@ -25,7 +27,9 @@ class AccountLoggedOut extends StatelessWidget {
             _buildGradientButton(
               icon: Icons.login,
               text: 'Đăng nhập',
-              onPressed: () {},
+              onPressed: () {
+                AppRouter.appRouter.go(Routes.login);
+              },
             ),
             const SizedBox(width: 10),
             ElevatedButton.icon(
@@ -40,7 +44,9 @@ class AccountLoggedOut extends StatelessWidget {
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
               ),
-              onPressed: () {},
+              onPressed: () {
+                AppRouter.appRouter.go(Routes.register);
+              },
               icon: const Icon(Icons.app_registration, size: 20),
               label: const Text('Đăng ký', style: TextStyle(fontSize: 18)),
             ),

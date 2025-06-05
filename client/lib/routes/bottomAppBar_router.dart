@@ -1,4 +1,3 @@
-// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nextflix/widgets/bottom_app_bar.dart' as custom;

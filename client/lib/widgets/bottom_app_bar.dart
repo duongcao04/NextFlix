@@ -13,16 +13,9 @@ class BottomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 65,
+      height: 84,
       decoration: const BoxDecoration(
-        color: Color(0xFF121212), // Màu nền đen
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 4,
-            offset: Offset(0, -1),
-          ),
-        ],
+        color: Color(0xff0f1016), // Màu nền đen
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -45,7 +38,7 @@ class BottomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: isSelected ? Colors.amber : Colors.white, size: 24),
-          const SizedBox(height: 4),
+          const SizedBox(height: 5),
           Text(
             label,
             style: TextStyle(

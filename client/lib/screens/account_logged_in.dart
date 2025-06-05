@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nextflix/models/user_model.dart';
 
 class AccountLoggedIn extends StatelessWidget {
-  final User user;
+  final UserModel user;
 
   const AccountLoggedIn({super.key, required this.user});
 
