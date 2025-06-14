@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:nextflix/models/topic_model.dart';
+import 'package:nextflix/services/topic_service.dart';
 
 class TopicScreen extends StatelessWidget {
-  final List<String> topics = [
-    'Marvel', 'Keo Lỳ Slayyy', 'Sitcom', '4K',
-    'Lồng Tiếng Cực Mạnh', 'Đỉnh Nóc', 'Xuyên Không', 'Cổ Trang',
-    '9x', 'Tham Vọng', 'Chữa Lành', 'Phù Thủy',
-  ];
+  const TopicScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,24 +13,43 @@ class TopicScreen extends StatelessWidget {
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 1.8,
-          children: topics.map((topic) => _buildTopicCard(topic)).toList(),
-        ),
+      body: FutureBuilder<List<Topic>>(
+        future: TopicService().fetchTopics(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text(
+                'Không có chủ đề nào',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          final topics = snapshot.data!;
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: GridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.8,
+              children: topics.map((topic) => _buildTopicCard(topic)).toList(),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildTopicCard(String text) {
+  Widget _buildTopicCard(Topic topic) {
+    final color = _hexToColor(topic.color);
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFf857a6), Color(0xFFFF5858)],
+        gradient: LinearGradient(
+          colors: [color.withOpacity(0.85), color],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -40,7 +57,7 @@ class TopicScreen extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          text,
+          topic.name,
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -50,5 +67,10 @@ class TopicScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _hexToColor(String hex) {
+    hex = hex.replaceAll(' ', '').replaceFirst('#', '');
+    return Color(int.parse('0xff$hex'));
   }
 }

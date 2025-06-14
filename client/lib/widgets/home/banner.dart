@@ -36,7 +36,7 @@ class _BannerState extends State<Banner> {
       children: [
         // --- Banner scroll ---
         SizedBox(
-          height: 360,
+          height: 600,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.movies.length,
@@ -69,23 +69,28 @@ class _BannerState extends State<Banner> {
                   child: Column(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Stack(
-                          children: [
-                            Image.network(
-                              movie.posterUrl,
-                              height: 250,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                            Positioned.fill(
-                              child: Container(
-                                color: Colors.black.withOpacity(0.2),
-                              ),
-                            ),
-                          ],
+                        borderRadius: BorderRadius.circular(
+                          0,
+                        ), // hoặc giữ bo nếu bạn thích
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Image.network(
+                            movie.backdropUrl,
+                            fit: BoxFit.cover,
+                            loadingBuilder:
+                                (_, child, loading) =>
+                                    loading == null
+                                        ? child
+                                        : const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                            errorBuilder:
+                                (_, __, ___) =>
+                                    const Icon(Icons.broken_image, size: 48),
+                          ),
                         ),
                       ),
+
                       const SizedBox(height: 12),
                       Text(
                         movie.title,
