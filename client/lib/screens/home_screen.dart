@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart' hide Banner;
+import 'package:nextflix/services/movie_service.dart';
+import 'package:nextflix/models/movie_model.dart';
+import 'package:nextflix/widgets/home/banner.dart';
+import 'package:nextflix/widgets/filter_bar_delegate.dart';
+import 'package:nextflix/widgets/movie_section.dart';
 import 'package:nextflix/widgets/header.dart';
-import '../data/mock_data.dart';
-import '../widgets/home/banner.dart';
-import '../widgets/filter_bar_delegate.dart';
-import '../widgets/movie_section.dart';
-import '../widgets/footer.dart';
 import 'topic_screen.dart';
+import 'package:nextflix/models/topic_model.dart';
+import 'package:nextflix/services/topic_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,108 +16,82 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: Header(),
+      appBar: const Header(),
       body: CustomScrollView(
         slivers: [
-          // 🔻 Thanh lọc thông minh
           SliverPersistentHeader(pinned: false, delegate: FilterBarDelegate()),
 
-          // 🔻 Nội dung chính
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 🎬 Banner nổi bật
-                Banner(
-                  movies: [
-                    MockData.featuredMovie,
-                    ...MockData.koreanMovies,
-                    ...MockData.chineseMovies,
-                  ],
+                const SizedBox(height: 80),
+
+                // 🔥 Banner phim nổi bật từ Firestore
+                FutureBuilder<List<Movie>>(
+                  future: MovieService().fetchFeaturedMovies(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text("Không có phim nổi bật"),
+                      );
+                    }
+                    return Banner(movies: snapshot.data!);
+                  },
                 ),
 
                 const SizedBox(height: 24),
 
-                // 🌟 "Bạn đang quan tâm gì?"
+                // 🌟 Chủ đề gợi ý
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              'Bạn đang quan tâm gì?',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                      const Expanded(
+                        child: Text(
+                          'Bạn đang quan tâm gì?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => TopicScreen(),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            _buildInterestCard('Marvel'),
-                            _buildInterestCard('Keo Lỳ Slayyy'),
-                            _buildInterestCard('Sitcom'),
-                            _buildInterestCard('4K'),
-                            _buildInterestCard('Lồng Tiếng Cực Mạnh'),
-                            _buildInterestCard('Đỉnh Nóc'),
-                            _buildInterestCard('Xuyên Không'),
-                            _buildInterestCard('Cổ Trang'),
-                            _buildInterestCard('9x'),
-                            _buildInterestCard('Tham Vọng'),
-                            _buildInterestCard('Chữa Lành'),
-                            _buildInterestCard('Phù Thủy'),
-                          ],
                         ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => TopicScreen()),
+                          );
+                        },
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 24),
-
-                // 📺 Mục phim Hàn
-                MovieSection(
-                  title: 'Phim Hàn Quốc mới',
-                  movies: MockData.koreanMovies,
-                ),
+                const SizedBox(height: 12),
+                _buildInterestChips(),
 
                 const SizedBox(height: 24),
 
-                // 📺 Mục phim Trung
-                MovieSection(
-                  title: 'Phim Trung Quốc mới',
-                  movies: MockData.chineseMovies,
-                ),
+                // 🇰🇷 Phim Hàn Quốc
+                _buildSection('Phim Cổ Trang mới', 'Cổ Trang'),
+
+                const SizedBox(height: 24),
+
+                // 🇨🇳 Phim Trung Quốc
+                _buildSection('Phim Tình Cảm mới', 'Tình Cảm'),
 
                 const SizedBox(height: 32),
-
-                // 👣 Chân trang
-                const FooterWidget(),
               ],
             ),
           ),
@@ -124,26 +100,81 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 🎨 Thẻ chủ đề gradient
-  static Widget _buildInterestCard(String text) {
+  // 🎬 Section phim động từ genre
+  Widget _buildSection(String title, String genre) {
+    return FutureBuilder<List<Movie>>(
+      future: MovieService().fetchMoviesByGenre(genre),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text("Không có phim $genre nào."),
+          );
+        }
+        return MovieSection(title: title, movies: snapshot.data!);
+      },
+    );
+  }
+
+  // 🎨 Thẻ chủ đề gợi ý
+  Widget _buildInterestChips() {
+    return FutureBuilder<List<Topic>>(
+      future: TopicService().fetchTopics(),
+      builder: (context, snapshot) {
+        print('📦 Snapshot status: ${snapshot.connectionState}');
+        print('🎯 Topics loaded: ${snapshot.data?.length}');
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text("Không có chủ đề."),
+          );
+        }
+        print("Lỗi nè");
+        print('🎯 Topics loaded: ${snapshot.data?.length}');
+        print('🔥 Raw data: ${snapshot.data}');
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children:
+                snapshot.data!.map((topic) => _buildTopicCard(topic)).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTopicCard(Topic topic) {
+    final color = _hexToColor(topic.color);
     return Container(
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFf857a6), Color(0xFFFF5858)],
+        gradient: LinearGradient(
+          colors: [color.withOpacity(0.8), color],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        text,
+        topic.name,
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
       ),
     );
+  }
+
+  Color _hexToColor(String hex) {
+    return Color(int.parse(hex.replaceFirst('#', '0xff')));
   }
 }

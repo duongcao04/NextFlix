@@ -15,7 +15,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
-      title: Row(children: [Text('a')]),
+      title: Row(children: [Text('')]),
       elevation: 0,
     );
   }
