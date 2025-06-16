@@ -36,7 +36,7 @@ class _BannerState extends State<Banner> {
       children: [
         // --- Banner scroll ---
         SizedBox(
-          height: 600,
+          height: 770,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.movies.length,
@@ -75,7 +75,7 @@ class _BannerState extends State<Banner> {
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: Image.network(
-                            movie.backdropUrl,
+                            movie.posterUrl,
                             fit: BoxFit.cover,
                             loadingBuilder:
                                 (_, child, loading) =>
