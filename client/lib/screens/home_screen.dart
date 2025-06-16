@@ -124,8 +124,6 @@ class HomeScreen extends StatelessWidget {
     return FutureBuilder<List<Topic>>(
       future: TopicService().fetchTopics(),
       builder: (context, snapshot) {
-        print('📦 Snapshot status: ${snapshot.connectionState}');
-        print('🎯 Topics loaded: ${snapshot.data?.length}');
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
