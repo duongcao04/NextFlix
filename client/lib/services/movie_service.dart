@@ -3,44 +3,55 @@ import '../models/movie_model.dart';
 
 class MovieService {
   final _db = FirebaseDatabase.instance.ref();
+  final _tag = "MovieService";
 
   // 🟡 Lấy tất cả phim
   Future<List<Movie>> fetchAllMovies() async {
-    final snapshot = await _db.child('movies').get();
-    if (!snapshot.exists) return [];
+    final movieSnapshot = await _db.child('movies').get();
+    if (!movieSnapshot.exists) return [];
 
-    final data = snapshot.value;
+    final data = movieSnapshot.value;
+    List<String> movieIds = [];
 
     if (data is List) {
-      return data
-          .where((e) => e != null)
-          .map((e) => Movie.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+      movieIds =
+          data
+              .where((e) => e != null && e['id'] != null)
+              .map((e) => e['id'] as String)
+              .toList();
     } else if (data is Map) {
-      return data.values
-          .where((e) => e != null)
-          .map((e) => Movie.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
-    } else {
-      return [];
+      movieIds =
+          data.values
+              .where((e) => e != null && e['id'] != null)
+              .map((e) => e['id'] as String)
+              .toList();
     }
+
+    return fetchMoviesByIds(movieIds);
   }
 
-  // 🔍 Lấy các phim theo genre (chưa dùng nếu không có field 'genre')
-
-  Future<List<Movie>> fetchMoviesByGenre(String genreName) async {
+  // 🔍 Lấy các phim theo genre
+  Future<List<Movie>> fetchMoviesByGenre(String genreSlug) async {
     final genreSnapshot = await _db.child('genres').get();
     if (!genreSnapshot.exists) return [];
 
     final data = genreSnapshot.value;
     List<String> movieIds = [];
 
-    if (data is Map) {
-      for (var genre in data.values) {
-        final genreMap = Map<String, dynamic>.from(genre);
-        final genreTitle = genreMap['name']?.toString().trim().toLowerCase();
-        if (genreTitle == genreName.trim().toLowerCase()) {
-          movieIds = List<String>.from(genreMap['movies'] ?? []);
+    if (data is List) {
+      // Iterate through the map entries
+      for (var entry in data) {
+        final genreMap = Map<String, dynamic>.from(entry);
+        final genreTitle = genreMap['slug']?.toString().trim().toLowerCase();
+
+        if (genreTitle == genreSlug.trim().toLowerCase()) {
+          // Handle both List and Map structures for movies
+          final moviesData = genreMap['movies'];
+          if (moviesData is List) {
+            movieIds = List<String>.from(moviesData);
+          } else if (moviesData is Map) {
+            movieIds = moviesData.keys.cast<String>().toList();
+          }
           break;
         }
       }
@@ -91,7 +102,6 @@ class MovieService {
     } else {
       return [];
     }
-
     return entries
         .map((e) => Movie.fromJson(Map<String, dynamic>.from(e)))
         .toList();

@@ -39,13 +39,15 @@ class Movie {
     final posters = images['posters'] as List<dynamic>? ?? [];
     final backdrops = images['backdrops'] as List<dynamic>? ?? [];
 
-    final posterPath = (posters.isNotEmpty && posters.first['path'] != null)
-        ? posters.first['path'] as String
-        : '';
+    final posterPath =
+        (posters.isNotEmpty && posters.first['path'] != null)
+            ? posters.first['path'] as String
+            : '';
 
-    final backdropPath = (backdrops.isNotEmpty && backdrops.first['path'] != null)
-        ? backdrops.first['path'] as String
-        : '';
+    final backdropPath =
+        (backdrops.isNotEmpty && backdrops.first['path'] != null)
+            ? backdrops.first['path'] as String
+            : '';
 
     // Xử lý đường dẫn ảnh – nếu là relative path thì thêm domain
     String normalizeImagePath(String path) {
@@ -60,18 +62,20 @@ class Movie {
       description: json['overview'] ?? 'Chưa có mô tả.',
       year: json['year'] ?? '',
       rating: json['rating'] ?? 'T13',
-      posterUrl: posterPath.isNotEmpty
-          ? normalizeImagePath(posterPath)
-          : 'https://via.placeholder.com/300x450.png?text=No+Image',
-      backdropUrl: backdropPath.isNotEmpty
-          ? normalizeImagePath(backdropPath)
-          : 'https://via.placeholder.com/1280x720.png?text=No+Backdrop',
+      posterUrl:
+          posterPath.isNotEmpty
+              ? normalizeImagePath(posterPath)
+              : 'https://via.placeholder.com/300x450.png?text=No+Image',
+      backdropUrl:
+          backdropPath.isNotEmpty
+              ? normalizeImagePath(backdropPath)
+              : 'https://via.placeholder.com/1280x720.png?text=No+Backdrop',
       ageRestriction: json['rating'] ?? 'T16',
       resolution: '4K',
       duration: ((json['cw']?['duration'] ?? 0) as num).round(),
       season: json['latest_season'] ?? 1,
       episode: json['cw']?['episode_number'] ?? 1,
-      latestEpisode: json['latest_episode']?['1']?.toString() ?? 'N/A',
+      latestEpisode: 'N/A',
     );
   }
 }

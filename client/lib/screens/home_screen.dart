@@ -84,12 +84,12 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // 🇰🇷 Phim Hàn Quốc
-                _buildSection('Phim Cổ Trang mới', 'Cổ Trang'),
+                _buildSection('Phim Cổ Trang mới', 'co-trang'),
 
                 const SizedBox(height: 24),
 
                 // 🇨🇳 Phim Trung Quốc
-                _buildSection('Phim Tình Cảm mới', 'Tình Cảm'),
+                _buildSection('Phim Tình Cảm mới', 'tinh-cam'),
 
                 const SizedBox(height: 32),
               ],
