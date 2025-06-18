@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoPhim - Xem Phim Chi Tiết</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+        }
+        .header, .footer {
+            background: #000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-menu a, .logo, .footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .main-content {
+            padding: 6rem 2rem 2rem;
+        }
+       .movie-banner {
+            background-size: cover;
+            background-position: top center;
+            background-repeat: no-repeat;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6rem 2rem;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+            border-radius: 12px;
+        }
+
+        .movie-banner h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .movie-banner p {
+            font-size: 1rem;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+        .btn-watch {
+            display: inline-block;
+            margin-top: 1.5rem;
+            background: #ff6b6b;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+            width: fit-content;
+            max-width: 300px;
+        }
+
+        .movie-detail-info {
+            margin-top: 3rem;
+        }
+        .episode-list {
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .episode-item {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="index.html" class="logo">RoPhim</a>
+    <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="phimLe.html">Phim lẻ</a></li>
+        <li><a href="phimBo.html">Phim bộ</a></li>
+        <li><a href="hoatHinh.html">Hoạt hình</a></li>
+        <li><a href="tvShow.html">TV Show</a></li>
+    </ul>
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
+    </div>
+</header>
+
+<main class="main-content">
+    <section class="movie-banner" id="movieBanner">
+        <h1 id="movieTitle">Đang tải...</h1>
+        <p id="movieOverview">Vui lòng đợi...</p>
+        <a id="watchButton" href="#" class="btn-watch">▶ Xem phim</a>
+    </section>
+
+    <section class="movie-detail-info" id="movieDetail">
+        <!-- Chi tiết sẽ được thêm bằng JS -->
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="#">Về chúng tôi</a>
+            <a href="#">Liên hệ</a>
+            <a href="#">Chính sách</a>
+            <a href="#">DMCA</a>
+        </div>
+        <p>&copy; 2024 RoPhim. Tất cả quyền được bảo lưu.</p>
+        <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
+    </div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCU0PcgMNtoBjLKYWHPC9sMF3Vap9-Yb8Y",
+    appId: "1:216107978984:web:2d8910c57ae490f11a795d",
+    messagingSenderId: "216107978984",
+    projectId: "nextflix-1b121",
+    authDomain: "nextflix-1b121.firebaseapp.com",
+    storageBucket: "nextflix-1b121.appspot.com",
+    databaseURL: "https://nextflix-1b121-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
+
+const params = new URLSearchParams(window.location.search);
+const movieId = params.get("id");
+
+firebase.database().ref("movies").once("value").then(snapshot => {
+    const movies = snapshot.val();
+    const movie = Object.values(movies).find(m => m.id === movieId);
+
+    if (movie) {
+        document.getElementById("movieBanner").style.backgroundImage = `url('${movie.images?.backdrops || movie.images?.horizontal_posters || ''}')`;
+        document.getElementById("movieTitle").textContent = movie.title;
+        document.getElementById("movieOverview").textContent = movie.overview || "Không có mô tả.";
+        document.getElementById("watchButton").href = `#`;
+
+        let html = `
+            <h2>Thông tin phim</h2>
+            <p><strong>Năm:</strong> ${movie.year || 'N/A'}</p>
+            <p><strong>Thể loại:</strong> ${(movie.genres || []).join(', ')}</p>
+            <p><strong>Loại:</strong> ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</p>
+            <p><strong>Đánh giá:</strong> ${movie.rating || 'Chưa có'}</p>
+        `;
+
+        if (movie.type === 2 && movie.latest_episode) {
+            html += `<div class="episode-list">`;
+            Object.entries(movie.latest_episode).forEach(([season, epCount]) => {
+                html += `<div class="episode-item">Season ${season}: ${epCount} tập</div>`;
+            });
+            html += `</div>`;
+        }
+
+        document.getElementById("movieDetail").innerHTML = html;
+    } else {
+        document.getElementById("movieTitle").textContent = "Không tìm thấy phim";
+        document.getElementById("movieOverview").textContent = "";
+    }
+});
+</script>
+
+</body>
+</html>
