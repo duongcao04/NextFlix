@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RoPhim - Xem Phim Online Miễn Phí</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <style>
         * {
             margin: 0;
@@ -91,35 +93,6 @@
             padding: 0 2rem;
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23222" width="1200" height="600"/><text x="600" y="300" text-anchor="middle" fill="%23666" font-size="48">Hero Banner</text></svg>');
-            background-size: cover;
-            background-position: center;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 3rem;
-            border-radius: 10px;
-        }
-
-        .hero-content {
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
 
         .btn-play {
             background: #ff6b6b;
@@ -313,10 +286,39 @@
             .search-box {
                 width: 200px;
             }
+            .hero {
+                height: 500px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                text-align: center;
+                background-size: cover;
+                background-position: center;
+                transition: background-image 0.5s ease;
+            }
+
+            .hero-content h1 {
+                font-size: 3rem;
+                color: #fff;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+                margin-bottom: 1rem;
+            }
+
+            .hero-content p {
+                font-size: 1.2rem;
+                color: #ddd;
+                margin-bottom: 2rem;
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            }
+
 
             .hero h1 {
                 font-size: 2rem;
             }
+
+
 
             .movie-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -342,8 +344,67 @@
         .loading {
             animation: pulse 1.5s infinite;
         }
+        .banner-carousel {
+            margin-bottom: 3rem;
+        }
+
+        .swiper-slide {
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            border-radius: 12px;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            }
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            }
+
+            .topic-card {
+            border-radius: 1rem;
+            padding: 1.5rem 1rem;
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            }
+
+            .topic-card:hover {
+            transform: translateY(-5px);
+            }
+
+            .topic-card h3 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            }
+
+            .topic-card a {
+            font-size: 0.9rem;
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.8;
+            }
+
+            .topic-card a:hover {
+            text-decoration: underline;
+            }
+
     </style>
 </head>
+
 
 <body>
     <!-- Header -->
@@ -363,52 +424,27 @@
         </nav>
     </header>
 
+
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Hero Section -->
-            <section class="hero">
-                <div class="hero-content">
-                    <h1>Xem Phim Online Miễn Phí</h1>
-                    <p>Hàng ngàn bộ phim chất lượng cao, cập nhật liên tục</p>
-                    <a href="#" class="btn-play">▶ Xem ngay</a>
+        <section class="banner-carousel">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper" id="bannerWrapper">
                 </div>
-            </section>
-
-            <!-- Categories -->
-            <div class="categories">
-                <a href="#" class="category-btn active">Tất cả</a>
-                <a href="#" class="category-btn">Hành động</a>
-                <a href="#" class="category-btn">Tình cảm</a>
-                <a href="#" class="category-btn">Hài hước</a>
-                <a href="#" class="category-btn">Kinh dị</a>
-                <a href="#" class="category-btn">Sci-Fi</a>
-                <a href="#" class="category-btn">Anime</a>
+                <div class="swiper-pagination"></div>
             </div>
+            </section>
+            <!-- Topics -->
+        <section class="section">
+            <h2 class="section-title">Bạn đang quan tâm gì?</h2>
+            <div class="topic-grid" id="topicContainer"></div>
+         </section>
 
-            <!-- New Movies Section -->
-            <section class="section">
-                <h2 class="section-title">Phim mới cập nhật</h2>
-                <div class="movie-grid" id="newMovies">
-                    <!-- Movies will be loaded here -->
-                </div>
+            <!-- Movie Sections -->
+            <section class="section" id="genreSections">
             </section>
 
-            <!-- Popular Movies Section -->
-            <section class="section">
-                <h2 class="section-title">Phim hot</h2>
-                <div class="movie-grid" id="popularMovies">
-                    <!-- Movies will be loaded here -->
-                </div>
-            </section>
-
-            <!-- TV Series Section -->
-            <section class="section">
-                <h2 class="section-title">Phim bộ</h2>
-                <div class="movie-grid" id="tvSeries">
-                    <!-- Movies will be loaded here -->
-                </div>
-            </section>
         </div>
     </main>
 
@@ -426,157 +462,187 @@
         </div>
     </footer>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+    <!-- Script -->
     <script>
-        // Sample movie data
-        const movies = {
-            new: [
-                { title: "Avatar: The Way of Water", year: "2024", quality: "HD", type: "Phim lẻ" },
-                { title: "Black Panther: Wakanda Forever", year: "2024", quality: "CAM", type: "Phim lẻ" },
-                { title: "Top Gun: Maverick", year: "2024", quality: "HD", type: "Phim lẻ" },
-                { title: "Doctor Strange 2", year: "2024", quality: "HD", type: "Phim lẻ" },
-                { title: "The Batman", year: "2024", quality: "HD", type: "Phim lẻ" },
-                { title: "Spider-Man: No Way Home", year: "2024", quality: "HD", type: "Phim lẻ" },
-                { title: "Dune", year: "2024", quality: "HD", type: "Phim lẻ" },
-                { title: "Fast & Furious 10", year: "2024", quality: "CAM", type: "Phim lẻ" }
-            ],
-            popular: [
-                { title: "Squid Game", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Stranger Things 4", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Money Heist", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "The Witcher", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Ozark", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Breaking Bad", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Game of Thrones", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "The Crown", year: "2024", quality: "HD", type: "Phim bộ" }
-            ],
-            series: [
-                { title: "House of the Dragon", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "The Rings of Power", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Euphoria", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Wednesday", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "The Bear", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Better Call Saul", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "Succession", year: "2024", quality: "HD", type: "Phim bộ" },
-                { title: "The Last of Us", year: "2024", quality: "HD", type: "Phim bộ" }
-            ]
-        };
+     const firebaseConfig = {
+        apiKey: "AIzaSyCU0PcgMNtoBjLKYWHPC9sMF3Vap9-Yb8Y",
+        appId: "1:216107978984:web:2d8910c57ae490f11a795d",
+        messagingSenderId: "216107978984",
+        projectId: "nextflix-1b121",
+        authDomain: "nextflix-1b121.firebaseapp.com",
+        storageBucket: "nextflix-1b121.firebasestorage.app",
+        databaseURL: "https://nextflix-1b121-default-rtdb.firebaseio.com"
+};
 
-        // Function to create movie card
-        function createMovieCard(movie) {
-            return `
-                <div class="movie-card" onclick="playMovie('${movie.title}')">
-                    <div class="movie-poster">
-                        <div class="play-overlay">▶</div>
-                        ${movie.title}
-                    </div>
-                    <div class="movie-info">
-                        <div class="movie-title">${movie.title}</div>
-                        <div class="movie-meta">
-                            <span>${movie.year} • ${movie.type}</span>
-                            <span class="quality-badge">${movie.quality}</span>
-                        </div>
-                    </div>
-                </div>
+
+      firebase.initializeApp(firebaseConfig);
+      const newMoviesContainer = document.getElementById('newMovies');
+      const popularMoviesContainer = document.getElementById('popularMovies');
+      const tvSeriesContainer = document.getElementById('tvSeries');
+
+      function createMovieCard(movie) {
+        return `
+         <a href="xemphimchitiet.html?id=${movie.id}" class="movie-card">
+
+            <div class="movie-poster" style="background-image: url('${movie.images?.posters || ''}'); background-size: cover;">
+              <div class="play-overlay">▶</div>
+            </div>
+            <div class="movie-info">
+              <div class="movie-title">${movie.title}</div>
+              <div class="movie-meta">
+                <span>${movie.year || 'N/A'} • ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</span>
+                <span class="quality-badge">${movie.rating || 'HD'}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }
+
+     function renderMoviesByGenres(genres, movies) {
+        const container = document.getElementById('genreSections');
+        container.innerHTML = '';
+
+        genres.forEach(genre => {
+            const matchedMovies = movies.filter(movie => movie.genres?.includes(genre.id)).slice(0, 8); // lấy tối đa 8 phim/genre
+            if (matchedMovies.length === 0) return;
+
+            const section = document.createElement('section');
+            section.className = 'section';
+
+            section.innerHTML = `
+            <h2 class="section-title">${genre.icon || ''} ${genre.name}</h2>
+            <div class="movie-grid">
+                ${matchedMovies.map(createMovieCard).join('')}
+            </div>
             `;
+
+            container.appendChild(section);
+        });
         }
 
-        // Function to load movies
-        function loadMovies() {
-            const newMoviesContainer = document.getElementById('newMovies');
-            const popularMoviesContainer = document.getElementById('popularMovies');
-            const tvSeriesContainer = document.getElementById('tvSeries');
+      function playMovie(title) {
+        alert(`Đang phát: ${title}\n\nTính năng phát phim sẽ được phát triển!`);
+      }
+      function renderBanners(movies) {
+        const bannerWrapper = document.getElementById('bannerWrapper');
+        bannerWrapper.innerHTML = movies.map(movie => `
+           <a href="xemphimchitiet.html?id=${movie.id}" class="swiper-slide" style="
+            background-image: url('${movie.images?.horizontal_posters || movie.images?.backdrops || ''}');
+            background-size: cover;
+            background-position: center;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+             ">
+        `).join('');
+        }
+        function loadBannersFromFeatured() {
+        Promise.all([
+            firebase.database().ref('movies').once('value'),
+            firebase.database().ref('featured_movies').once('value')
+        ]).then(([movieSnap, featuredSnap]) => {
+            const moviesData = movieSnap.val() || {};
+            const featuredData = featuredSnap.val() || [];
 
-            newMoviesContainer.innerHTML = movies.new.map(createMovieCard).join('');
-            popularMoviesContainer.innerHTML = movies.popular.map(createMovieCard).join('');
-            tvSeriesContainer.innerHTML = movies.series.map(createMovieCard).join('');
+            const movieMap = Object.fromEntries(Object.entries(moviesData).map(([id, m]) => [m.id || id, m]));
+            const featured = Object.values(featuredData).map(f => movieMap[f.movie]).filter(m => m?.images?.horizontal_posters || m?.images?.backdrops);
+
+            renderBanners(featured.slice(0, 5));
+
+            new Swiper(".mySwiper", {
+            pagination: { el: ".swiper-pagination" },
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false
+            },
+            effect: 'fade'
+            });
+        });
         }
 
-        // Function to handle movie play
-        function playMovie(title) {
-            alert(`Đang phát: ${title}\n\nTính năng phát phim sẽ được phát triển!`);
-        }
+        function renderTopicCards(topics) {
+            const container = document.getElementById('topicContainer');
+            container.innerHTML = topics.map(topic => `
+                <div class="topic-card" style="background: ${topic.color};" onclick="filterByTopic('${topic.id}')">
+                <h3>${topic.name}</h3>
+                <a href="#">Xem chủ đề &rarr;</a>
+                </div>
+            `).join('');
+            }
 
-        // Search functionality
+            function filterByTopic(topicId) {
+            alert(`Lọc phim theo topic: ${topicId} (sẽ xử lý sau)`);
+            }
+
+
+
+      document.addEventListener('DOMContentLoaded', function () {
+        Promise.all([
+        firebase.database().ref('movies').once('value'),
+        firebase.database().ref('genres').once('value')
+        ]).then(([movieSnap, genreSnap]) => {
+        const allMovies = Object.values(movieSnap.val() || {});
+        const genres = Object.values(genreSnap.val() || {});
+        renderMoviesByGenres(genres, allMovies);
+        });
+
+
+
+        loadBannersFromFeatured();
+
+        firebase.database().ref('topics').once('value').then(snapshot => {
+        const topics = Object.values(snapshot.val() || {});
+        renderTopicCards(topics);
+        });
+
+
         document.querySelector('.search-box').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const query = this.value.trim();
-                if (query) {
-                    alert(`Tìm kiếm: "${query}"\n\nTính năng tìm kiếm sẽ được phát triển!`);
-                }
+                if (query) alert(`Tìm kiếm: "${query}"\n\nTính năng tìm kiếm sẽ được phát triển!`);
             }
         });
 
-        // Category buttons functionality
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                // Remove active class from all buttons
                 document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                
-                // Add active class to clicked button
                 this.classList.add('active');
-                
-                // Show loading animation
-                document.querySelectorAll('.movie-grid').forEach(grid => {
-                    grid.classList.add('loading');
-                });
-                
-                // Simulate loading delay
+                document.querySelectorAll('.movie-grid').forEach(grid => grid.classList.add('loading'));
                 setTimeout(() => {
-                    document.querySelectorAll('.movie-grid').forEach(grid => {
-                        grid.classList.remove('loading');
-                    });
-                    
+                    document.querySelectorAll('.movie-grid').forEach(grid => grid.classList.remove('loading'));
                     alert(`Đã chọn thể loại: ${this.textContent}\n\nTính năng lọc theo thể loại sẽ được phát triển!`);
                 }, 500);
             });
         });
 
-        // Smooth scrolling for navigation
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.getElementById(href.substring(1));
+                    if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth' });
                 }
             });
         });
 
-        // Header scroll effect
         window.addEventListener('scroll', function() {
             const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(0, 0, 0, 0.95)';
-            } else {
-                header.style.background = 'rgba(0, 0, 0, 0.9)';
-            }
+            header.style.background = window.scrollY > 100 ? 'rgba(0, 0, 0, 0.95)' : 'rgba(0, 0, 0, 0.9)';
         });
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadMovies();
-            
-            // Add some entrance animations
-            setTimeout(() => {
-                document.querySelectorAll('.movie-card').forEach((card, index) => {
-                    setTimeout(() => {
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(20px)';
-                        card.style.transition = 'opacity 0.5s, transform 0.5s';
-                        
-                        setTimeout(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        }, 50);
-                    }, index * 100);
-                });
-            }, 100);
-        });
+      });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
 </body>
 </html>
