@@ -8,6 +8,7 @@ import 'package:nextflix/widgets/header.dart';
 import 'topic_screen.dart';
 import 'package:nextflix/models/topic_model.dart';
 import 'package:nextflix/services/topic_service.dart';
+import 'package:nextflix/screens/genre_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -80,18 +81,54 @@ class HomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 12),
                 _buildInterestChips(),
-
                 const SizedBox(height: 24),
+                _buildSection('👑 Hoàng Cung', 'hoang-cung'),
+                const SizedBox(height: 20),
 
-                // 🇰🇷 Phim Hàn Quốc
-                _buildSection('Phim Cổ Trang mới', 'co-trang'),
+                _buildSection('🎭 Chính Kịch', 'chinh-kich'),
+                const SizedBox(height: 20),
 
+                _buildSection('💥 Hành Động', 'hanh-dong'),
+                const SizedBox(height: 20),
+
+                _buildSection('💕 Tình Cảm', 'tinh-cam'),
+                const SizedBox(height: 20),
+
+                _buildSection('🏮 Cổ Trang', 'co-trang'),
+                const SizedBox(height: 20),
+
+                _buildSection('⚔️ Chiến Tranh', 'chien-tranh'),
+                const SizedBox(height: 20),
+
+                _buildSection('🔬 Khoa Học', 'khoa-hoc'),
+                const SizedBox(height: 20),
+
+                _buildSection('🔍 Bí Ẩn', 'bi-an'),
+                const SizedBox(height: 20),
+
+                _buildSection('😄 Hài', 'hai'),
+                const SizedBox(height: 20),
+
+                _buildSection('🧠 Tâm Lý', 'tam-ly'),
+                const SizedBox(height: 20),
+
+                _buildSection('🌟 Kỳ Ảo', 'ky-ao'),
+                const SizedBox(height: 20),
+
+                _buildSection('📜 Lịch Sử', 'lich-su'),
+                const SizedBox(height: 20),
+
+                _buildSection('💖 Lãng Mạn', 'lang-man'),
+                const SizedBox(height: 20),
+
+                _buildSection('🚀 Viễn Tưởng', 'vien-tuong'),
+                const SizedBox(height: 20),
+
+                _buildSection('📚 Chuyển Thể', 'chuyen-the'),
+                const SizedBox(height: 20),
+
+                _buildSection('🗺️ Phiêu Lưu', 'phieu-luu'),
                 const SizedBox(height: 24),
-
-                // 🇨🇳 Phim Trung Quốc
-                _buildSection('Phim Tình Cảm mới', 'tinh-cam'),
-
-                const SizedBox(height: 32),
               ],
             ),
           ),
@@ -114,7 +151,18 @@ class HomeScreen extends StatelessWidget {
             child: Text("Không có phim $genre nào."),
           );
         }
-        return MovieSection(title: title, movies: snapshot.data!);
+        return MovieSection(
+          title: title,
+          movies: snapshot.data!,
+          onMorePressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => GenreScreen(genreName: title, genreSlug: genre),
+              ),
+            );
+          },
+        );
       },
     );
   }

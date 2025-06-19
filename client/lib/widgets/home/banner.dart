@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nextflix/models/movie_model.dart';
+import 'package:nextflix/screens/movie_detail_screen.dart';
 
 class Banner extends StatefulWidget {
   final List<Movie> movies;
-
   const Banner({super.key, required this.movies});
 
   @override
@@ -26,162 +26,155 @@ class _BannerState extends State<Banner> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.movies.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
+    if (widget.movies.isEmpty) return const SizedBox.shrink();
     final movie = widget.movies[_currentIndex];
 
     return Column(
       children: [
-        // --- Banner scroll ---
+        // --- Banner carousel ---
         SizedBox(
-          height: 770,
+          height: 500,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.movies.length,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
             itemBuilder: (context, index) {
               final movie = widget.movies[index];
-              double pageOffset =
-                  ((_pageController.page ?? _currentIndex.toDouble()) -
-                      index.toDouble());
+              final offset =
+                  (_pageController.page ?? _currentIndex.toDouble()) - index;
+              final scale = (1 - (offset.abs() * 0.2)).clamp(0.85, 1.0);
+              final tilt = offset * 0.04;
 
-              double scale = (1 - (pageOffset.abs() * 0.2)).clamp(0.85, 1.0);
-              double tilt = pageOffset * 0.08;
-
-              return Transform(
-                alignment: Alignment.center,
-                transform:
-                    Matrix4.identity()
-                      ..setEntry(3, 2, 0.001)
-                      ..rotateY(tilt)
-                      ..scale(scale),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 16,
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          0,
-                        ), // hoặc giữ bo nếu bạn thích
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Image.network(
-                            movie.posterUrl,
-                            fit: BoxFit.cover,
-                            loadingBuilder:
-                                (_, child, loading) =>
-                                    loading == null
-                                        ? child
-                                        : const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                            errorBuilder:
-                                (_, __, ___) =>
-                                    const Icon(Icons.broken_image, size: 48),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-                      Text(
-                        movie.title,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        movie.englishTitle,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => MovieDetailScreen(movieId: movie.id),
+                    ),
+                  );
+                },
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform:
+                      Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(tilt)
+                        ..scale(scale),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      movie.posterUrl,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      loadingBuilder:
+                          (_, child, loading) =>
+                              loading == null
+                                  ? child
+                                  : const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                      errorBuilder:
+                          (_, __, ___) =>
+                              const Icon(Icons.broken_image, size: 48),
+                    ),
                   ),
                 ),
               );
             },
+            onPageChanged: (index) => setState(() => _currentIndex = index),
           ),
         ),
 
-        // --- Buttons ---
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow[700],
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Xem phim'),
-              ),
-              const SizedBox(width: 12),
-              ElevatedButton.icon(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                icon: const Icon(Icons.info_outline),
-                label: const Text('Thông tin'),
-              ),
-            ],
+        const SizedBox(height: 16),
+
+        // --- Movie titles ---
+        Text(
+          movie.title,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          movie.englishTitle,
+          style: const TextStyle(fontSize: 14, color: Colors.grey),
+          textAlign: TextAlign.center,
         ),
 
         const SizedBox(height: 12),
 
-        // --- Info tags ---
-        Wrap(
-          spacing: 6,
+        // --- Action buttons ---
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildTag('IMDb ${movie.rating}', Colors.amber),
-            _buildTag('${movie.ageRestriction}', Colors.grey[800]!),
-            _buildTag(movie.year, Colors.grey[800]!),
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: chuyển sang trang xem phim
+              },
+              icon: const Icon(Icons.play_arrow),
+              label: const Text("Xem phim"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => MovieDetailScreen(movieId: movie.id),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.info_outline),
+              label: const Text("Thông tin"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
           ],
         ),
 
         const SizedBox(height: 12),
 
-        // --- Dot indicator ---
+        // --- Movie tags ---
+        Wrap(
+          spacing: 8,
+          children: [
+            _buildTag("IMDb ${movie.rating}", Colors.amber[700]!),
+            _buildTag(movie.ageRestriction, Colors.grey[800]!),
+            _buildTag(movie.year, Colors.grey[800]!),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // --- Dots indicator ---
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(widget.movies.length, (index) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              width: _currentIndex == index ? 12 : 6,
+              width: _currentIndex == index ? 14 : 6,
               height: 6,
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(

@@ -20,6 +20,7 @@ class Movie {
   final String latestEpisode;
 
   final String releaseDate;
+  final int? type;
 
   Movie({
     required this.id,
@@ -39,6 +40,7 @@ class Movie {
     this.episode = 1,
     this.latestEpisode = 'N/A',
     this.releaseDate = '2025-05-18',
+    this.type,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -81,6 +83,7 @@ class Movie {
       episode: json['cw']?['episode_number'] ?? 1,
       latestEpisode: 'N/A',
       releaseDate: json['release_date'],
+      type: json['type'],
     );
   }
 }

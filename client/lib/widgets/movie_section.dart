@@ -5,8 +5,14 @@ import '../widgets/movie_card.dart';
 class MovieSection extends StatelessWidget {
   final String title;
   final List<Movie> movies;
+  final VoidCallback? onMorePressed;
 
-  const MovieSection({super.key, required this.title, required this.movies});
+  const MovieSection({
+    super.key,
+    required this.title,
+    required this.movies,
+    this.onMorePressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +27,7 @@ class MovieSection extends StatelessWidget {
               Text(title, style: Theme.of(context).textTheme.titleLarge),
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                onPressed: () {},
+                onPressed: onMorePressed,
               ),
             ],
           ),

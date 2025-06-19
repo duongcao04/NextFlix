@@ -106,4 +106,35 @@ class MovieService {
         .map((e) => Movie.fromJson(Map<String, dynamic>.from(e)))
         .toList();
   }
+
+  Future<Movie?> fetchMovieById(String id) async {
+    final snapshot = await _db.child('movies').get();
+    if (!snapshot.exists) return null;
+
+    final data = snapshot.value;
+
+    if (data is Map) {
+      final values = data.values.whereType<Map<Object?, Object?>>();
+      for (var raw in values) {
+        final movieMap = raw.map(
+          (key, value) => MapEntry(key.toString(), value),
+        );
+        if (movieMap['id'] == id) {
+          return Movie.fromJson(Map<String, dynamic>.from(movieMap));
+        }
+      }
+    } else if (data is List) {
+      final values = data.whereType<Map<Object?, Object?>>();
+      for (var raw in values) {
+        final movieMap = raw.map(
+          (key, value) => MapEntry(key.toString(), value),
+        );
+        if (movieMap['id'] == id) {
+          return Movie.fromJson(Map<String, dynamic>.from(movieMap));
+        }
+      }
+    }
+
+    return null;
+  }
 }
