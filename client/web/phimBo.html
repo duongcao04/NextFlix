@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phim Bộ - NEXTFLIX</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <nav class="nav-container">
+      <a href="index.html" class="logo">NEXTFLIX</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="phimLe.html">Phim lẻ</a></li>
+        <li><a href="phimBo.html" class="active">Phim bộ</a></li>
+        <li><a href="hoatHinh.html">Hoạt hình</a></li>
+        <li><a href="marvel.html">Marvel</a></li>
+      </ul>
+      <div class="search-container">
+        <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <section class="section">
+        <h1 class="section-title">Phim Bộ</h1>
+        <div id="movieList" class="movie-grid"></div>
+        <div id="errorBox" style="color: red;"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#">Về chúng tôi</a>
+        <a href="#">Liên hệ</a>
+        <a href="#">Chính sách</a>
+        <a href="#">DMCA</a>
+      </div>
+      <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="firebase/init.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const db = firebase.database();
+      const movieList = document.getElementById('movieList');
+      const errorBox = document.getElementById('errorBox');
+
+      db.ref('movies').once('value')
+        .then(snapshot => {
+          const movies = snapshot.val();
+          let count = 0;
+          for (const key in movies) {
+            const movie = movies[key];
+            if (movie.type === 2) {
+              movieList.innerHTML += `
+                <a href="xemphimchitiet.html?id=${movie.id}" class="movie-card">
+                  <div class="movie-poster" style="background-image: url('${movie.images?.posters || ''}'); background-size: cover;">
+                    <div class="play-overlay">▶</div>
+                  </div>
+                  <div class="movie-info">
+                    <div class="movie-title">${movie.title}</div>
+                    <div class="movie-meta">
+                      <span>${movie.year || 'N/A'} • Phim bộ</span>
+                      <span class="quality-badge">${movie.rating || 'HD'}</span>
+                    </div>
+                  </div>
+                </a>`;
+              count++;
+            }
+          }
+
+          if (count === 0) {
+            movieList.innerHTML = "<p>Không tìm thấy phim bộ nào.</p>";
+          }
+        })
+        .catch(error => {
+          errorBox.textContent = "Lỗi khi tải phim: " + error.message;
+        });
+
+      document.querySelector('.search-box').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          const query = this.value.trim();
+          if (query) {
+            window.location.href = `timkiem.html?query=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

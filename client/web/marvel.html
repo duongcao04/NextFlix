@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hoạt Hình - NEXTFLIX</title>
+  <title>Phim Marvel - NEXTFLIX</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -16,8 +16,8 @@
         <li><a href="index.html">Trang chủ</a></li>
         <li><a href="phimLe.html">Phim lẻ</a></li>
         <li><a href="phimBo.html">Phim bộ</a></li>
-        <li><a href="hoatHinh.html" class="active">Hoạt hình</a></li>
-        <li><a href="marvel.html">Marvel</a></li>
+        <li><a href="hoatHinh.html">Hoạt hình</a></li>
+        <li><a href="marvel.html" class="active">Marvel</a></li>
       </ul>
       <div class="search-container">
         <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
@@ -28,7 +28,7 @@
   <main class="main-content">
     <div class="container">
       <section class="section">
-        <h1 class="section-title">Phim Hoạt Hình</h1>
+        <h1 class="section-title">Phim Marvel</h1>
         <div id="movieList" class="movie-grid"></div>
         <div id="errorBox" style="color: red;"></div>
       </section>
@@ -63,7 +63,7 @@
           let count = 0;
           for (const key in movies) {
             const movie = movies[key];
-            if (movie.genres?.includes(17)) {
+            if (movie.genres?.includes(18)) {
               movieList.innerHTML += `
                 <a href="xemphimchitiet.html?id=${movie.id}" class="movie-card">
                   <div class="movie-poster" style="background-image: url('${movie.images?.posters || ''}'); background-size: cover;">
@@ -82,7 +82,7 @@
           }
 
           if (count === 0) {
-            movieList.innerHTML = "<p>Không có phim hoạt hình nào.</p>";
+            movieList.innerHTML = "<p>Không có phim Marvel nào.</p>";
           }
         })
         .catch(error => {

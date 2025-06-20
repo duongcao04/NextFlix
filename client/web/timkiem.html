@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Kết quả tìm kiếm</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header">
+    <nav class="nav-container">
+      <a href="index.html" class="logo">RoPhim</a>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <h2 class="section-title" id="searchTitle">Kết quả tìm kiếm</h2>
+      <div class="movie-grid" id="searchResults"></div>
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="firebase/init.js"></script>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = (urlParams.get('query') || '').toLowerCase();
+
+    document.getElementById('searchTitle').textContent = `Kết quả cho: "${query}"`;
+
+    function createMovieCard(movie) {
+      return `
+        <a href="xemphimchitiet.html?id=${movie.id}" class="movie-card">
+          <div class="movie-poster" style="background-image: url('${movie.images?.posters || ''}'); background-size: cover;">
+            <div class="play-overlay">▶</div>
+          </div>
+          <div class="movie-info">
+            <div class="movie-title">${movie.title}</div>
+            <div class="movie-meta">
+              <span>${movie.year || 'N/A'} • ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</span>
+              <span class="quality-badge">${movie.rating || 'HD'}</span>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    firebase.database().ref('movies').once('value').then(snapshot => {
+      const allMovies = Object.values(snapshot.val() || {});
+      const results = allMovies.filter(movie =>
+        movie.title?.toLowerCase().includes(query)
+      );
+
+      const container = document.getElementById('searchResults');
+      container.innerHTML = results.length
+        ? results.map(createMovieCard).join('')
+        : `<p style="color:#ccc">Không tìm thấy kết quả nào phù hợp.</p>`;
+    });
+  </script>
+</body>
+</html>

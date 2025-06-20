@@ -1,648 +1,81 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoPhim - Xem Phim Online Miễn Phí</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-            color: #ffffff;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #333;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ff6b6b;
-            text-decoration: none;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            color: #ffffff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .nav-menu a:hover {
-            color: #ff6b6b;
-        }
-
-        .search-container {
-            position: relative;
-        }
-
-        .search-box {
-            padding: 0.5rem 1rem;
-            border: 1px solid #333;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            width: 250px;
-        }
-
-        .search-box::placeholder {
-            color: #ccc;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-top: 80px;
-            padding: 2rem 0;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-
-        .btn-play {
-            background: #ff6b6b;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-play:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
-        }
-
-        /* Movie Sections */
-        .section {
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: #ff6b6b;
-            border-left: 4px solid #ff6b6b;
-            padding-left: 1rem;
-        }
-
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .movie-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .movie-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.2);
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 280px;
-            background: linear-gradient(45deg, #333, #555);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .play-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 107, 107, 0.9);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .movie-card:hover .play-overlay {
-            opacity: 1;
-        }
-
-        .movie-info {
-            padding: 1rem;
-        }
-
-        .movie-title {
-            font-size: 1rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .movie-meta {
-            font-size: 0.8rem;
-            color: #ccc;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .quality-badge {
-            background: #ff6b6b;
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        /* Categories */
-        .categories {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .category-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .category-btn:hover,
-        .category-btn.active {
-            background: #ff6b6b;
-            border-color: #ff6b6b;
-            transform: translateY(-2px);
-        }
-
-        /* Footer */
-        .footer {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 2rem 0;
-            margin-top: 4rem;
-            border-top: 1px solid #333;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        .footer p {
-            color: #ccc;
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-links a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #ff6b6b;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-menu {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-
-            .search-box {
-                width: 200px;
-            }
-            .hero {
-                height: 500px;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 2rem;
-                text-align: center;
-                background-size: cover;
-                background-position: center;
-                transition: background-image 0.5s ease;
-            }
-
-            .hero-content h1 {
-                font-size: 3rem;
-                color: #fff;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-                margin-bottom: 1rem;
-            }
-
-            .hero-content p {
-                font-size: 1.2rem;
-                color: #ddd;
-                margin-bottom: 2rem;
-                text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
-            }
-
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-
-
-            .movie-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-
-            .categories {
-                justify-content: center;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-
-        /* Loading Animation */
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-
-        .loading {
-            animation: pulse 1.5s infinite;
-        }
-        .banner-carousel {
-            margin-bottom: 3rem;
-        }
-
-        .swiper-slide {
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: start;
-            border-radius: 12px;
-        }
-
-        .swiper-slide img {
-            width: 100%;
-            height: auto;
-            max-height: 500px;
-            object-fit: contain;
-            }
-        .topic-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1.5rem;
-            }
-
-            .topic-card {
-            border-radius: 1rem;
-            padding: 1.5rem 1rem;
-            color: #fff;
-            cursor: pointer;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: overlay;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-            }
-
-            .topic-card:hover {
-            transform: translateY(-5px);
-            }
-
-            .topic-card h3 {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            }
-
-            .topic-card a {
-            font-size: 0.9rem;
-            color: #fff;
-            text-decoration: none;
-            opacity: 0.8;
-            }
-
-            .topic-card a:hover {
-            text-decoration: underline;
-            }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXTFLIX - Xem Phim Online Miễn Phí</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
-
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav-container">
-            <a href="#" class="logo">RoPhim</a>
-            <ul class="nav-menu">
-                <li><a href="#home">Trang chủ</a></li>
-                <li><a href="phimLe.html">Phim lẻ</a></li>
-                <li><a href="#series">Phim bộ</a></li>
-                <li><a href="#cartoon">Hoạt hình</a></li>
-                <li><a href="#tv-shows">TV Show</a></li>
-            </ul>
-            <div class="search-container">
-                <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
-            </div>
-        </nav>
-    </header>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav-container">
+      <a href="index.html" class="logo">NEXTFLIX</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="phimLe.html">Phim lẻ</a></li>
+        <li><a href="phimBo.html">Phim bộ</a></li>
+        <li><a href="hoatHinh.html">Hoạt hình</a></li>
+        <li><a href="marvel.html">Marvel</a></li>
+      </ul>
+      <div class="search-container">
+        <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
+      </div>
+    </nav>
+  </header>
 
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-        <section class="banner-carousel">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper" id="bannerWrapper">
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-            </section>
-            <!-- Topics -->
-        <section class="section">
-            <h2 class="section-title">Bạn đang quan tâm gì?</h2>
-            <div class="topic-grid" id="topicContainer"></div>
-         </section>
-
-            <!-- Movie Sections -->
-            <section class="section" id="genreSections">
-            </section>
-
+      <!-- Banner -->
+      <section class="banner-carousel">
+        <div class="swiper mySwiper">
+          <div class="swiper-wrapper" id="bannerWrapper"></div>
+          <div class="swiper-pagination"></div>
         </div>
-    </main>
+      </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#">Về chúng tôi</a>
-                <a href="#">Liên hệ</a>
-                <a href="#">Chính sách</a>
-                <a href="#">DMCA</a>
-            </div>
-            <p>&copy; 2024 RoPhim. Tất cả quyền được bảo lưu.</p>
-            <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
-        </div>
-    </footer>
+      <!-- Chủ đề -->
+      <section class="section">
+        <h2 class="section-title">Bạn đang quan tâm gì?</h2>
+        <div class="topic-grid" id="topicContainer"></div>
+      </section>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+      <!-- Thể loại -->
+      <section class="section" id="genreSections">
+        <h2 class="section-title">Thể loại nổi bật</h2>
+        <!-- các phần phim sẽ được render tại đây bởi main.js -->
+      </section>
 
-    <!-- Script -->
-    <script>
-     const firebaseConfig = {
-        apiKey: "AIzaSyCU0PcgMNtoBjLKYWHPC9sMF3Vap9-Yb8Y",
-        appId: "1:216107978984:web:2d8910c57ae490f11a795d",
-        messagingSenderId: "216107978984",
-        projectId: "nextflix-1b121",
-        authDomain: "nextflix-1b121.firebaseapp.com",
-        storageBucket: "nextflix-1b121.firebasestorage.app",
-        databaseURL: "https://nextflix-1b121-default-rtdb.firebaseio.com"
-};
+    </div>
+  </main>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#">Về chúng tôi</a>
+        <a href="#">Liên hệ</a>
+        <a href="#">Chính sách</a>
+        <a href="#">DMCA</a>
+      </div>
+      <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
+      <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
+    </div>
+  </footer>
 
-      firebase.initializeApp(firebaseConfig);
-      const newMoviesContainer = document.getElementById('newMovies');
-      const popularMoviesContainer = document.getElementById('popularMovies');
-      const tvSeriesContainer = document.getElementById('tvSeries');
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="firebase/init.js"></script>
 
-      function createMovieCard(movie) {
-        return `
-         <a href="xemphimchitiet.html?id=${movie.id}" class="movie-card">
+  <!-- SwiperJS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 
-            <div class="movie-poster" style="background-image: url('${movie.images?.posters || ''}'); background-size: cover;">
-              <div class="play-overlay">▶</div>
-            </div>
-            <div class="movie-info">
-              <div class="movie-title">${movie.title}</div>
-              <div class="movie-meta">
-                <span>${movie.year || 'N/A'} • ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</span>
-                <span class="quality-badge">${movie.rating || 'HD'}</span>
-              </div>
-            </div>
-          </a>
-        `;
-      }
-
-     function renderMoviesByGenres(genres, movies) {
-        const container = document.getElementById('genreSections');
-        container.innerHTML = '';
-
-        genres.forEach(genre => {
-            const matchedMovies = movies.filter(movie => movie.genres?.includes(genre.id)).slice(0, 8); // lấy tối đa 8 phim/genre
-            if (matchedMovies.length === 0) return;
-
-            const section = document.createElement('section');
-            section.className = 'section';
-
-            section.innerHTML = `
-            <h2 class="section-title">${genre.icon || ''} ${genre.name}</h2>
-            <div class="movie-grid">
-                ${matchedMovies.map(createMovieCard).join('')}
-            </div>
-            `;
-
-            container.appendChild(section);
-        });
-        }
-
-      function playMovie(title) {
-        alert(`Đang phát: ${title}\n\nTính năng phát phim sẽ được phát triển!`);
-      }
-      function renderBanners(movies) {
-        const bannerWrapper = document.getElementById('bannerWrapper');
-        bannerWrapper.innerHTML = movies.map(movie => `
-           <a href="xemphimchitiet.html?id=${movie.id}" class="swiper-slide" style="
-            background-image: url('${movie.images?.horizontal_posters || movie.images?.backdrops || ''}');
-            background-size: cover;
-            background-position: center;
-            min-height: 500px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding-left: 2rem;
-            border-radius: 12px;
-            text-decoration: none;
-             ">
-        `).join('');
-        }
-        function loadBannersFromFeatured() {
-        Promise.all([
-            firebase.database().ref('movies').once('value'),
-            firebase.database().ref('featured_movies').once('value')
-        ]).then(([movieSnap, featuredSnap]) => {
-            const moviesData = movieSnap.val() || {};
-            const featuredData = featuredSnap.val() || [];
-
-            const movieMap = Object.fromEntries(Object.entries(moviesData).map(([id, m]) => [m.id || id, m]));
-            const featured = Object.values(featuredData).map(f => movieMap[f.movie]).filter(m => m?.images?.horizontal_posters || m?.images?.backdrops);
-
-            renderBanners(featured.slice(0, 5));
-
-            new Swiper(".mySwiper", {
-            pagination: { el: ".swiper-pagination" },
-            loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false
-            },
-            effect: 'fade'
-            });
-        });
-        }
-
-        function renderTopicCards(topics) {
-            const container = document.getElementById('topicContainer');
-            container.innerHTML = topics.map(topic => `
-                <div class="topic-card" style="background: ${topic.color};" onclick="filterByTopic('${topic.id}')">
-                <h3>${topic.name}</h3>
-                <a href="#">Xem chủ đề &rarr;</a>
-                </div>
-            `).join('');
-            }
-
-            function filterByTopic(topicId) {
-            alert(`Lọc phim theo topic: ${topicId} (sẽ xử lý sau)`);
-            }
-
-
-
-      document.addEventListener('DOMContentLoaded', function () {
-        Promise.all([
-        firebase.database().ref('movies').once('value'),
-        firebase.database().ref('genres').once('value')
-        ]).then(([movieSnap, genreSnap]) => {
-        const allMovies = Object.values(movieSnap.val() || {});
-        const genres = Object.values(genreSnap.val() || {});
-        renderMoviesByGenres(genres, allMovies);
-        });
-
-
-
-        loadBannersFromFeatured();
-
-        firebase.database().ref('topics').once('value').then(snapshot => {
-        const topics = Object.values(snapshot.val() || {});
-        renderTopicCards(topics);
-        });
-
-
-        document.querySelector('.search-box').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const query = this.value.trim();
-                if (query) alert(`Tìm kiếm: "${query}"\n\nTính năng tìm kiếm sẽ được phát triển!`);
-            }
-        });
-
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                document.querySelectorAll('.movie-grid').forEach(grid => grid.classList.add('loading'));
-                setTimeout(() => {
-                    document.querySelectorAll('.movie-grid').forEach(grid => grid.classList.remove('loading'));
-                    alert(`Đã chọn thể loại: ${this.textContent}\n\nTính năng lọc theo thể loại sẽ được phát triển!`);
-                }, 500);
-            });
-        });
-
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetElement = document.getElementById(href.substring(1));
-                    if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('.header');
-            header.style.background = window.scrollY > 100 ? 'rgba(0, 0, 0, 0.95)' : 'rgba(0, 0, 0, 0.9)';
-        });
-      });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-
+  <!-- Logic chính -->
+  <script src="js/main.js"></script>
 </body>
 </html>
