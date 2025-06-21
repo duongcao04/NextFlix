@@ -6,6 +6,8 @@ import 'package:nextflix/routes/routes.dart';
 import 'package:nextflix/screens/account_logged_in.dart';
 import 'package:nextflix/screens/account_logged_out.dart';
 import 'package:nextflix/routes/app_router.dart';
+import 'package:nextflix/screens/contact_screen.dart';
+import 'package:nextflix/screens/privacy_policy_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -165,14 +167,18 @@ class AccountScreen extends StatelessWidget {
     AppRouter.appRouter.go(Routes.settings);
   }
 
+  // ignore: unused_element
   void _navigateToPrivacyPolicy(BuildContext context) {
-    // TODO: Navigate to privacy policy screen
-    _showComingSoonDialog(context, 'Chính sách bảo mật');
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+    );
   }
 
   void _navigateToSupport(BuildContext context) {
     // TODO: Navigate to support screen
-    _showComingSoonDialog(context, 'Trợ giúp & Hỗ trợ');
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const ContactScreen()));
   }
 
   void _navigateToAbout(BuildContext context) {
