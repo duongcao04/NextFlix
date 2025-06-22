@@ -301,18 +301,23 @@ class AuthenticationBloc
   // Helper methods for authentication operations
   Future<UserCredential?> signInWithGoogle() async {
     try {
+      print('🔵 AuthBloc: Starting Google sign-in...');
+
       final userCredential = await _firebaseService.signInWithGoogle();
 
       if (userCredential != null) {
-        print('Google sign-in successful: ${userCredential.user?.email}');
+        print(
+          '🔵 AuthBloc: Google sign-in successful: ${userCredential.user?.email}',
+        );
 
-        // Create user model for Realtime Database
+        // Tạo user model cho Realtime Database
         final user = UserModel(
           id: userCredential.user!.uid,
           email: userCredential.user!.email ?? '',
           displayName:
               userCredential.user!.displayName ??
-              userCredential.user!.email?.split('@').first,
+              userCredential.user!.email?.split('@').first ??
+              'User',
           photoURL: userCredential.user!.photoURL,
           phoneNumber: userCredential.user!.phoneNumber,
           role: UserRole.user,
@@ -321,17 +326,23 @@ class AuthenticationBloc
           updatedAt: DateTime.now(),
         );
 
-        // Save to Realtime Database (create or update)
-        await UserRepository().createUser(user);
+        // Lưu vào Realtime Database
+        try {
+          await _userRepository.createUser(user);
+          print('🟢 AuthBloc: User saved to database successfully');
+        } catch (dbError) {
+          print('🟡 AuthBloc: Database save error (continuing): $dbError');
+          // Không throw error ở đây, vẫn cho phép đăng nhập
+        }
 
-        // The auth state listener will automatically handle the authentication flow
+        // AuthState sẽ được update tự động qua listener
         return userCredential;
       } else {
-        print('Google sign-in was cancelled by user');
+        print('🟡 AuthBloc: Google sign-in was cancelled');
         return null;
       }
     } catch (e) {
-      print('Google sign-in error: $e');
+      print('🔴 AuthBloc: Google sign-in error: $e');
       throw _handleAuthException(e);
     }
   }

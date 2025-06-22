@@ -50,28 +50,34 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleGoogleSignIn() async {
+    print('🔵 LoginScreen: Starting Google Sign-In...');
     setState(() => _isLoading = true);
 
     try {
       final authBloc = context.read<AuthenticationBloc>();
+      print('🔵 LoginScreen: Got AuthBloc, calling signInWithGoogle...');
+
       final userCredential = await authBloc.signInWithGoogle();
+      print(
+        '🔵 LoginScreen: signInWithGoogle returned: ${userCredential != null}',
+      );
 
       if (userCredential != null && mounted) {
-        print('User signed in: ${userCredential.user?.displayName}');
-        // The AuthenticationBloc will automatically handle the navigation via listener
+        print('🟢 LoginScreen: User signed in successfully');
+        // BlocListener sẽ handle navigation
       } else {
+        print('🟡 LoginScreen: Sign-in cancelled or failed');
         if (mounted) {
           _showErrorSnackBar('Đăng nhập Google bị hủy');
         }
-        print('Google sign-in aborted');
       }
     } catch (e) {
+      print('🔴 LoginScreen: Google sign-in error: $e');
       if (mounted) {
         _showErrorSnackBar(
           'Đăng nhập Google thất bại: ${_getErrorMessage(e.toString())}',
         );
       }
-      print('Google sign-in error: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

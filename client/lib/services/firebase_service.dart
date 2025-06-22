@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -15,7 +16,8 @@ class FirebaseService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
   // Getters
   FirebaseDatabase get database => _database;
@@ -30,34 +32,37 @@ class FirebaseService {
   DatabaseReference get messages => _database.ref('messages');
 
   // Authentication methods
+  // Sửa lại method signInWithGoogle trong FirebaseService
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      // Disconnect trước để buộc hiển thị bảng chọn tài khoản
-      await _googleSignIn.disconnect();
+      print('🔵 Starting Google Sign-In in FirebaseService...');
+
+      // Không cần disconnect trước, chỉ signOut để clear cache
+      await _googleSignIn.signOut();
 
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        // User canceled the sign-in
-        print('Google sign-in was cancelled by user');
+        print('🟡 Google sign-in was cancelled by user');
         return null;
       }
 
-      print('Google user selected: ${googleUser.email}');
+      print('🔵 Google user selected: ${googleUser.email}');
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
       if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        print('🔴 Failed to get Google authentication tokens');
         throw FirebaseException(
           plugin: 'firebase_auth',
           message: 'Failed to get Google authentication tokens',
         );
       }
 
-      print('Google auth tokens obtained successfully');
+      print('🔵 Google auth tokens obtained successfully');
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -65,25 +70,25 @@ class FirebaseService {
         idToken: googleAuth.idToken,
       );
 
-      print('Firebase credential created');
+      print('🔵 Firebase credential created, signing in...');
 
       // Sign in to Firebase with the Google user credential
       final userCredential = await _auth.signInWithCredential(credential);
 
-      print('Firebase sign-in completed: ${userCredential.user?.email}');
-
+      print('🟢 Firebase sign-in completed: ${userCredential.user?.email}');
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      print(
-        'FirebaseAuthException during Google sign-in: ${e.code} - ${e.message}',
-      );
+      print('🔴 FirebaseAuthException: ${e.code} - ${e.message}');
+      rethrow;
+    } on PlatformException catch (e) {
+      print('🔴 PlatformException: ${e.code} - ${e.message}');
       throw FirebaseException(
         plugin: 'firebase_auth',
-        message: 'Google sign-in failed: ${e.message}',
+        message: 'Google sign-in platform error: ${e.message}',
         code: e.code,
       );
     } catch (e) {
-      print('General exception during Google sign-in: $e');
+      print('🔴 General exception during Google sign-in: $e');
       throw FirebaseException(
         plugin: 'firebase_auth',
         message: 'Google sign-in failed: $e',
