@@ -98,26 +98,56 @@ class FirebaseService {
 
   Future<User?> signInWithFacebook() async {
     try {
+      print('🔵 Starting Facebook Sign-In...');
+
+      // Logout trước để clear cache
+      await FacebookAuth.instance.logOut();
+
       // Trigger the sign-in flow
-      final LoginResult result = await FacebookAuth.instance.login();
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+      );
+
+      print('🔵 Facebook login result status: ${result.status}');
 
       if (result.status == LoginStatus.success) {
+        print('🔵 Facebook login successful, getting access token...');
+
+        final AccessToken accessToken = result.accessToken!;
+        print(
+          '🔵 Access token obtained: ${accessToken.tokenString.substring(0, 20)}...',
+        );
+
         // Create a credential from the access token
         final OAuthCredential facebookCredential =
-            FacebookAuthProvider.credential(result.accessToken!.tokenString);
+            FacebookAuthProvider.credential(accessToken.tokenString);
+
+        print('🔵 Created Facebook credential, signing in to Firebase...');
 
         // Sign in to Firebase with the Facebook credential
         final userCredential = await _auth.signInWithCredential(
           facebookCredential,
         );
+
+        print('🟢 Firebase sign-in successful: ${userCredential.user?.email}');
         return userCredential.user;
+      } else if (result.status == LoginStatus.cancelled) {
+        print('🟡 Facebook login was cancelled by user');
+        return null;
       } else {
+        print('🔴 Facebook login failed: ${result.message}');
         throw FirebaseException(
           plugin: 'firebase_auth',
           message: 'Facebook sign-in failed: ${result.message}',
         );
       }
+    } on FirebaseAuthException catch (e) {
+      print(
+        '🔴 FirebaseAuthException during Facebook sign-in: ${e.code} - ${e.message}',
+      );
+      rethrow;
     } catch (e) {
+      print('🔴 General exception during Facebook sign-in: $e');
       throw FirebaseException(
         plugin: 'firebase_auth',
         message: 'Facebook sign-in failed: $e',

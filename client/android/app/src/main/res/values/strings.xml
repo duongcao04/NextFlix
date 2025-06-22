@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">NextFlix</string>
-    <string name="facebook_app_id">2501276786882784</string>
+    
+    <string name="facebook_app_id">1779329922998346</string>
+    <string name="fb_login_protocol_scheme">fb1779329922998346</string>
+    <string name="facebook_client_token">8f87ab7d524d45922b31b01431c5fd4c</string>
+
+
 </resources>

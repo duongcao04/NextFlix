@@ -349,16 +349,19 @@ class AuthenticationBloc
 
   Future<User?> signInWithFacebook() async {
     try {
+      print('🔵 AuthBloc: Starting Facebook sign-in...');
+
       final user = await _firebaseService.signInWithFacebook();
 
       if (user != null) {
-        print('Facebook sign-in successful: ${user.email}');
+        print('🔵 AuthBloc: Facebook sign-in successful: ${user.email}');
 
-        // Create user model for Realtime Database
+        // Tạo user model cho Realtime Database
         final userModel = UserModel(
           id: user.uid,
           email: user.email ?? '',
-          displayName: user.displayName ?? user.email?.split('@').first,
+          displayName:
+              user.displayName ?? user.email?.split('@').first ?? 'User',
           photoURL: user.photoURL,
           phoneNumber: user.phoneNumber,
           role: UserRole.user,
@@ -367,17 +370,21 @@ class AuthenticationBloc
           updatedAt: DateTime.now(),
         );
 
-        // Save to Realtime Database (create or update)
-        await UserRepository().createUser(userModel);
+        // Lưu vào Realtime Database
+        try {
+          await _userRepository.createUser(userModel);
+          print('🟢 AuthBloc: User saved to database successfully');
+        } catch (dbError) {
+          print('🟡 AuthBloc: Database save error (continuing): $dbError');
+        }
 
-        // The auth state listener will automatically handle the authentication flow
         return user;
       } else {
-        print('Facebook sign-in was cancelled by user');
+        print('🟡 AuthBloc: Facebook sign-in was cancelled');
         return null;
       }
     } catch (e) {
-      print('Facebook sign-in error: $e');
+      print('🔴 AuthBloc: Facebook sign-in error: $e');
       throw _handleAuthException(e);
     }
   }
