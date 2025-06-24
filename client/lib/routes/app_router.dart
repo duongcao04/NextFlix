@@ -7,6 +7,7 @@ import 'package:nextflix/screens/movie_detail_screen.dart';
 import 'package:nextflix/screens/account_screen.dart';
 import 'package:nextflix/screens/home_screen.dart';
 import 'package:nextflix/screens/search_screen.dart';
+import 'package:nextflix/screens/showtimes.dart';
 import 'package:nextflix/screens/splash_screen.dart';
 import 'package:nextflix/screens/register_screen.dart';
 import 'routes.dart';
@@ -38,6 +39,11 @@ class AppRouter {
             path: Routes.search,
             name: 'search',
             builder: (context, state) => const SearchScreen(),
+          ),
+          GoRoute(
+            path: Routes.showtimes,
+            name: 'showtimes',
+            builder: (context, state) => const ScheduleScreen(),
           ),
           GoRoute(
             path: Routes.account,

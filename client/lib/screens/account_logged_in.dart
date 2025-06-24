@@ -51,30 +51,30 @@ class AccountLoggedIn extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton.icon(
-              icon: const Icon(Icons.settings),
-              label: const Text("Quản lý tài khoản"),
-              onPressed: () {
-                // Mở trang quản lý nếu bạn có
-              },
-            ),
-            const SizedBox(width: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text("Đăng xuất"),
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                if (context.mounted) {
-                  context.go('/login');
-                }
-              },
-            ),
-          ],
-        ),
+        // const SizedBox(height: 10),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //   children: [
+        //     ElevatedButton.icon(
+        //       icon: const Icon(Icons.settings),
+        //       label: const Text("Quản lý tài khoản"),
+        //       onPressed: () {
+        //         // Mở trang quản lý nếu bạn có
+        //       },
+        //     ),
+        //     const SizedBox(width: 10),
+        //     ElevatedButton(
+        //       style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+        //       child: const Text("Đăng xuất"),
+        //       onPressed: () async {
+        //         await FirebaseAuth.instance.signOut();
+        //         if (context.mounted) {
+        //           context.go('/login');
+        //         }
+        //       },
+        //     ),
+        //   ],
+        // ),
         const SizedBox(height: 20),
       ],
     );

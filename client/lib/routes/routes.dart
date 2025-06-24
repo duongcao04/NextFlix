@@ -22,6 +22,8 @@ class Routes {
 
   // Search routes
   static const String search = '/search';
+  //Showtimes
+  static const String showtimes = '/showtimes';
 
   // Notification routes
   static const String notifications = '/notifications';
