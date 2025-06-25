@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nextflix/models/movie_model.dart';
 import 'package:nextflix/services/movie_service.dart';
+import 'package:nextflix/screens/player_screen.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final String movieId;
@@ -14,6 +15,7 @@ class MovieDetailScreen extends StatefulWidget {
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Movie? movie;
   bool isLoading = true;
+  final GlobalKey _episodeKey = GlobalKey();
 
   @override
   void initState() {
@@ -23,15 +25,21 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   Future<void> fetchMovie() async {
     final result = await MovieService().fetchMovieById(widget.movieId);
-    if (result != null) {
-      setState(() {
-        movie = result;
-        isLoading = false;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      movie = result;
+      isLoading = false;
+    });
+    print('Số tập phim: ${movie?.episodes.length}');
+  }
+
+  void _scrollToEpisodes() {
+    final context = _episodeKey.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -62,25 +70,27 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_buildBanner(), _buildDetails()],
+            children: [
+              _buildBanner(),
+              _buildDetails(),
+              if (movie!.episodes.isNotEmpty) _buildEpisodeList(),
+            ],
           ),
         ),
       ),
     );
   }
 
+  /// 🖼 Banner phim + nút Xem phim
   Widget _buildBanner() {
     return Stack(
       children: [
-        // 📸 Full backdrop image (dưới cùng)
         Image.network(
           movie!.backdropUrl,
           width: double.infinity,
-          height: 250, // hoặc MediaQuery.of(context).size.width * 0.6
+          height: 250,
           fit: BoxFit.cover,
         ),
-
-        // 📍 Overlay nội dung
         Container(
           height: 250,
           width: double.infinity,
@@ -96,19 +106,17 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // Text(
-              //   movie!.title,
-              //   style: const TextStyle(
-              //     fontSize: 24,
-              //     fontWeight: FontWeight.bold,
-              //     color: Colors.white,
-              //   ),
-              // ),
+              Text(
+                movie!.title,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 8),
               ElevatedButton.icon(
-                onPressed: () {
-                  // TODO: Chuyển đến trang player
-                },
+                onPressed: _scrollToEpisodes,
                 icon: const Icon(Icons.play_arrow),
                 label: const Text('Xem phim'),
                 style: ElevatedButton.styleFrom(
@@ -129,6 +137,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     );
   }
 
+  /// 📄 Hiển thị mô tả và metadata phim
   Widget _buildDetails() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -150,6 +159,88 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             style: const TextStyle(color: Colors.white, height: 1.5),
           ),
           const SizedBox(height: 24),
+
+          if (movie!.latestEpisode != 'N/A') ...[
+            const SizedBox(height: 8),
+            Text(
+              "Tập mới nhất: ${movie!.latestEpisode}",
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// 🎞 Danh sách các tập phim
+  Widget _buildEpisodeList() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 12),
+          const Text(
+            'Danh sách tập',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // ✅ Grid 5 cột
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 5,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 2.2, // tỉ lệ ngang/dọc cho ô
+            children:
+                movie!.episodes.map((episode) {
+                  return GestureDetector(
+                    onTap: () {
+                      print("Xem tập ${episode.episodeNumber}");
+
+                      // TODO: Chuyển sang trang Player, truyền link video hoặc dữ liệu tập
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => VideoPlayerScreen(
+                                videoUrl: episode.embedVideo,
+                                title:
+                                    '${movie!.title} - Tập ${episode.episodeNumber}',
+                              ),
+                        ),
+                      );
+                    },
+
+                    child: Container(
+                      alignment: Alignment.center,
+
+                      decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white24),
+                      ),
+
+                      child: Text(
+                        'Tập ${episode.episodeNumber}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16, // ✅ Tăng cỡ chữ
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+          ),
+
+          const SizedBox(height: 24),
           Text(
             "Năm: ${movie!.year}",
             style: const TextStyle(color: Colors.white70),
@@ -162,12 +253,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             "Đánh giá: ${movie!.rating}",
             style: const TextStyle(color: Colors.white70),
           ),
-          const SizedBox(height: 12),
-          if (movie!.latestEpisode != 'N/A')
+          if (movie!.latestEpisode != 'N/A') ...[
+            const SizedBox(height: 8),
             Text(
               "Tập mới nhất: ${movie!.latestEpisode}",
               style: const TextStyle(color: Colors.white70),
             ),
+          ],
         ],
       ),
     );
