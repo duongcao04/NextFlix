@@ -9,6 +9,8 @@ import 'package:nextflix/constants/app_constants.dart';
 import 'package:nextflix/repositories/user_repository.dart';
 import 'package:nextflix/blocs/authentication_bloc.dart';
 import 'package:nextflix/services/firebase_service.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 void main() async {
   // Ẩn thanh trạng thái và thanh điều hướng hệ thống
@@ -26,6 +28,7 @@ void main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
+  WebViewPlatform.instance = AndroidWebViewPlatform();
 
   runApp(const MyApp());
 }

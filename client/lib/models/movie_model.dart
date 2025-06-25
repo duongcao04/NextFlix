@@ -1,3 +1,22 @@
+class Episode {
+  final int episodeNumber;
+  final String embedVideo;
+
+  Episode({required this.episodeNumber, required this.embedVideo});
+
+  factory Episode.fromJson(Map<String, dynamic> json) {
+    return Episode(
+      episodeNumber: json['episode_number'] ?? 1,
+      embedVideo: json['embed_video'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'episode_number': episodeNumber,
+    'embed_video': embedVideo,
+  };
+}
+
 class Movie {
   final String id;
   final String title;
@@ -21,6 +40,7 @@ class Movie {
 
   final String releaseDate;
   final int? type;
+  final List<Episode> episodes;
 
   Movie({
     required this.id,
@@ -41,6 +61,7 @@ class Movie {
     this.latestEpisode = 'N/A',
     this.releaseDate = '2025-05-18',
     this.type,
+    this.episodes = const [],
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -54,6 +75,28 @@ class Movie {
     String normalizeImagePath(String path) {
       if (path.startsWith('http')) return path;
       return 'https://img.ophim.live/uploads/movies/$path';
+    }
+
+    print('Raw seasons data: ${json['seasons']}');
+
+    List<Episode> episodes = [];
+    try {
+      final seasons = json['seasons'];
+      print('✅ SEASONS: $seasons'); // <-- LOG kiểm tra
+
+      final season0 = seasons?[0];
+      if (season0 != null && season0['episodes'] is List) {
+        episodes =
+            (season0['episodes'] as List)
+                .map((e) => Episode.fromJson(Map<String, dynamic>.from(e)))
+                .toList();
+
+        print('✅ PARSED ${episodes.length} episodes');
+      } else {
+        print('⚠️ Không có season[0] hoặc episodes không hợp lệ');
+      }
+    } catch (e) {
+      print('❌ Lỗi khi parse episodes: $e');
     }
 
     return Movie(
@@ -84,6 +127,7 @@ class Movie {
       latestEpisode: 'N/A',
       releaseDate: json['release_date'],
       type: json['type'],
+      episodes: episodes,
     );
   }
 
@@ -107,6 +151,7 @@ class Movie {
       'latestEpisode': latestEpisode,
       'releaseDate': releaseDate,
       'type': type,
+      'episodes': episodes.map((e) => e.toJson()).toList(),
     };
   }
 }

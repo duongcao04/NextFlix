@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.nextflit">
-
+     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Nếu bạn không cần quảng cáo, có thể bỏ dòng này -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 
