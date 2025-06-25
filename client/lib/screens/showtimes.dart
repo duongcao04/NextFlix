@@ -10,7 +10,8 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  int selectedDateIndex = 0;
+  int selectedDateIndex =
+      7; // Mặc định là hôm nay (index 7 trong danh sách 7 ngày trước + hôm nay + 30 ngày sau)
   DateTime selectedDate = DateTime.now();
 
   // Tạo dữ liệu phim ngẫu nhiên cho các ngày
@@ -112,14 +113,31 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   String _formatSelectedDate(DateTime date) {
     final now = DateTime.now();
-    if (date.day == now.day &&
-        date.month == now.month &&
-        date.year == now.year) {
+
+    final today = DateTime(now.year, now.month, now.day);
+    final compareDate = DateTime(date.year, date.month, date.day);
+
+    if (compareDate.isAtSameMomentAs(today)) {
       return 'Hôm nay';
-    } else if (date.day == now.add(const Duration(days: 1)).day &&
-        date.month == now.add(const Duration(days: 1)).month &&
-        date.year == now.add(const Duration(days: 1)).year) {
+    } else if (compareDate.isAtSameMomentAs(
+      today.add(const Duration(days: 1)),
+    )) {
       return 'Ngày mai';
+    } else if (compareDate.isAtSameMomentAs(
+      today.subtract(const Duration(days: 1)),
+    )) {
+      return 'Hôm qua';
+    } else if (compareDate.isBefore(today)) {
+      const weekdays = [
+        'Thứ 2',
+        'Thứ 3',
+        'Thứ 4',
+        'Thứ 5',
+        'Thứ 6',
+        'Thứ 7',
+        'Chủ nhật',
+      ];
+      return '${weekdays[date.weekday - 1]}, ${date.day}/${date.month} (Đã qua)';
     } else {
       const weekdays = [
         'Thứ 2',
