@@ -50,6 +50,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   firebase_database: ^11.3.6
   url_launcher: ^6.3.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

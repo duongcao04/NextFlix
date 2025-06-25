@@ -8,6 +8,7 @@ import 'package:nextflix/screens/account_logged_out.dart';
 import 'package:nextflix/routes/app_router.dart';
 import 'package:nextflix/screens/contact_screen.dart';
 import 'package:nextflix/screens/privacy_policy_screen.dart';
+import 'package:nextflix/screens/watch_history_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -149,8 +150,10 @@ class AccountScreen extends StatelessWidget {
   }
 
   void _navigateToHistory(BuildContext context) {
-    // TODO: Navigate to watch history screen
-    _showComingSoonDialog(context, 'Lịch sử xem');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const WatchHistoryScreen()),
+    );
   }
 
   void _navigateToFavorites(BuildContext context) {
@@ -167,7 +170,6 @@ class AccountScreen extends StatelessWidget {
     AppRouter.appRouter.go(Routes.settings);
   }
 
-  // ignore: unused_element
   void _navigateToPrivacyPolicy(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
@@ -175,7 +177,6 @@ class AccountScreen extends StatelessWidget {
   }
 
   void _navigateToSupport(BuildContext context) {
-    // TODO: Navigate to support screen
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (context) => const ContactScreen()));
