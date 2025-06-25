@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import '../models/movie_model.dart';
 import '../screens/movie_detail_screen.dart';
+import '../widgets/favorite_button.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
+  final bool showFavoriteButton;
 
-  const MovieCard({super.key, required this.movie});
+  const MovieCard({
+    super.key,
+    required this.movie,
+    this.showFavoriteButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +60,23 @@ class MovieCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Thêm nút yêu thích
+                if (showFavoriteButton)
+                  Positioned(
+                    top: 5,
+                    right: 5,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: FavoriteButton(
+                        movie: movie,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
               ],
             ),
             const SizedBox(height: 8),

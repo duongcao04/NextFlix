@@ -86,4 +86,27 @@ class Movie {
       type: json['type'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'slug': slug,
+      'englishTitle': englishTitle,
+      'description': description,
+      'year': year,
+      'rating': rating,
+      'ageRestriction': ageRestriction,
+      'resolution': resolution,
+      'posterUrl': posterUrl,
+      'horizontalPosters': horizontalPosters,
+      'backdropUrl': backdropUrl,
+      'duration': duration,
+      'season': season,
+      'episode': episode,
+      'latestEpisode': latestEpisode,
+      'releaseDate': releaseDate,
+      'type': type,
+    };
+  }
 }

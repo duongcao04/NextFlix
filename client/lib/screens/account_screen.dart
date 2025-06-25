@@ -7,6 +7,7 @@ import 'package:nextflix/screens/account_logged_in.dart';
 import 'package:nextflix/screens/account_logged_out.dart';
 import 'package:nextflix/routes/app_router.dart';
 import 'package:nextflix/screens/contact_screen.dart';
+import 'package:nextflix/screens/favorites_screen.dart';
 import 'package:nextflix/screens/privacy_policy_screen.dart';
 import 'package:nextflix/screens/watch_history_screen.dart';
 
@@ -157,8 +158,10 @@ class AccountScreen extends StatelessWidget {
   }
 
   void _navigateToFavorites(BuildContext context) {
-    // TODO: Navigate to favorites screen
-    _showComingSoonDialog(context, 'Danh sách yêu thích');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FavoritesScreen()),
+    );
   }
 
   void _navigateToDownloads(BuildContext context) {
