@@ -129,12 +129,14 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                movie.title,
-                style: const TextStyle(color: Colors.white, fontSize: 13),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+              Flexible(
+                child: Text(
+                  movie.title,
+                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
@@ -167,7 +169,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
         _buildSection('👑 Hoàng Cung', 'hoang-cung'),
         const SizedBox(height: 20),
 
