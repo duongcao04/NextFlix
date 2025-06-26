@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thông Tin Phim - NEXTFLIX</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .movie-banner {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 500px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6rem 3rem;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+
+    .movie-left {
+      flex: 1 1 300px;
+    }
+
+    .movie-left h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .movie-left p {
+      font-size: 1rem;
+      max-width: 700px;
+      line-height: 1.6;
+    }
+
+    .movie-right {
+      flex: 1 1 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .movie-info-text p {
+      margin: 0.2rem 0;
+      font-size: 0.95rem;
+    }
+
+    .btn-play {
+      background: #ff6b6b;
+      color: white;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .btn-play:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .movie-banner {
+        flex-direction: column;
+        padding: 3rem 2rem;
+        text-align: center;
+      }
+
+      .movie-right {
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav-container">
+      <a href="index.html" class="logo">NEXTFLIX</a>
+      <ul class="nav-menu">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="phimLe.html">Phim lẻ</a></li>
+        <li><a href="phimBo.html">Phim bộ</a></li>
+        <li><a href="hoatHinh.html">Hoạt hình</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <section class="movie-banner" id="movieBanner">
+      <div class="movie-left">
+        <h1 id="movieTitle">Đang tải...</h1>
+        <p id="movieOverview">Vui lòng đợi...</p>
+      </div>
+      <div class="movie-right">
+        <div class="movie-info-text" id="movieInfoBox">
+          <!-- thông tin phim ở đây -->
+        </div>
+        <a href="#" id="watchLink" class="btn-play">▶ Xem ngay</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#">Về chúng tôi</a>
+        <a href="#">Liên hệ</a>
+        <a href="#">Chính sách</a>
+        <a href="#">DMCA</a>
+      </div>
+      <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
+      <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCU0PcgMNtoBjLKYWHPC9sMF3Vap9-Yb8Y",
+      appId: "1:216107978984:web:2d8910c57ae490f11a795d",
+      messagingSenderId: "216107978984",
+      projectId: "nextflix-1b121",
+      authDomain: "nextflix-1b121.firebaseapp.com",
+      storageBucket: "nextflix-1b121.appspot.com",
+      databaseURL: "https://nextflix-1b121-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const movieId = new URLSearchParams(window.location.search).get("id");
+
+    firebase.database().ref("movies").once("value").then(snapshot => {
+      const movies = snapshot.val() || {};
+      const movie = Object.values(movies).find(m => m.id === movieId);
+
+      const titleEl = document.getElementById("movieTitle");
+      const overviewEl = document.getElementById("movieOverview");
+      const bannerEl = document.getElementById("movieBanner");
+      const watchBtn = document.getElementById("watchLink");
+      const infoBox = document.getElementById("movieInfoBox");
+
+      if (!movie) {
+        titleEl.textContent = "Không tìm thấy phim.";
+        overviewEl.textContent = "";
+        return;
+      }
+
+      // Dữ liệu hiển thị
+      bannerEl.style.backgroundImage = `url('${movie.images?.backdrops || movie.images?.horizontal_posters || ''}')`;
+      titleEl.textContent = movie.title;
+      overviewEl.textContent = movie.overview || "Không có mô tả.";
+      watchBtn.href = `xemphimchitiet.html?id=${movie.id}`;
+
+      infoBox.innerHTML = `
+        <p><strong>Năm:</strong> ${movie.year || 'N/A'}</p>
+        <p><strong>Thể loại:</strong> ${(movie.genre_names || []).join(', ')}</p>
+        <p><strong>Loại:</strong> ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</p>
+        <p><strong>Đánh giá:</strong> ${movie.rating || 'Chưa có'}</p>
+      `;
+    });
+  </script>
+</body>
+</html>

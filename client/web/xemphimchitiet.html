@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NEXTFLIX - Xem Phim Chi Tiết</title>
+  <title>NEXTFLIX - Xem Phim</title>
   <style>
     body {
       margin: 0;
@@ -30,28 +30,7 @@
     .main-content {
       padding: 6rem 2rem 2rem;
     }
-    .movie-banner {
-      background-size: cover;
-      background-position: top center;
-      min-height: 500px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 6rem 2rem;
-      text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
-      border-radius: 12px;
-    }
-    .movie-banner h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    .movie-banner p {
-      font-size: 1rem;
-      max-width: 700px;
-      line-height: 1.6;
-    }
     iframe.video-frame {
-      margin-top: 2rem;
       width: 100%;
       height: 600px;
       border: none;
@@ -83,16 +62,10 @@
     <li><a href="phimLe.html">Phim lẻ</a></li>
     <li><a href="phimBo.html">Phim bộ</a></li>
     <li><a href="hoatHinh.html">Hoạt hình</a></li>
-    <li><a href="tvShow.html">TV Show</a></li>
   </ul>
 </header>
 
 <main class="main-content">
-  <section class="movie-banner" id="movieBanner">
-    <h1 id="movieTitle">Đang tải...</h1>
-    <p id="movieOverview">Vui lòng đợi...</p>
-  </section>
-
   <section id="videoContainer">
     <iframe id="videoFrame" class="video-frame" allowfullscreen></iframe>
   </section>
@@ -127,23 +100,20 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-const params = new URLSearchParams(window.location.search);
-const movieId = params.get("id");
+const movieId = new URLSearchParams(window.location.search).get("id");
 
 firebase.database().ref("movies").once("value").then(snapshot => {
   const movies = snapshot.val() || {};
   const movie = Object.values(movies).find(m => m.id === movieId);
 
+  const detailContainer = document.getElementById("movieDetail");
+  const videoFrame = document.getElementById("videoFrame");
+
   if (!movie) {
-    document.getElementById("movieTitle").textContent = "Không tìm thấy phim.";
+    detailContainer.innerHTML = "<h2>Không tìm thấy phim.</h2>";
+    videoFrame.remove();
     return;
   }
-
-  document.getElementById("movieBanner").style.backgroundImage = `url('${movie.images?.backdrops || movie.images?.horizontal_posters || ''}')`;
-  document.getElementById("movieTitle").textContent = movie.title;
-  document.getElementById("movieOverview").textContent = movie.overview || "Không có mô tả.";
-
-  const detailContainer = document.getElementById("movieDetail");
 
   let html = `
     <h2>Thông tin phim</h2>
@@ -152,8 +122,6 @@ firebase.database().ref("movies").once("value").then(snapshot => {
     <p><strong>Loại:</strong> ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</p>
     <p><strong>Đánh giá:</strong> ${movie.rating || 'Chưa có'}</p>
   `;
-
-  const videoFrame = document.getElementById("videoFrame");
 
   if (movie.seasons?.[0]?.episodes?.length) {
     const firstEpisode = movie.seasons[0].episodes[0];
@@ -164,6 +132,8 @@ firebase.database().ref("movies").once("value").then(snapshot => {
       html += `<div class="episode-item" onclick="document.getElementById('videoFrame').src='${ep.embed_video}'">Tập ${ep.episode_number}</div>`;
     });
     html += `</div>`;
+  } else if (movie.embed_video) {
+    videoFrame.src = movie.embed_video;
   } else {
     videoFrame.remove();
     html += `<p><em>Chưa có video cho phim này.</em></p>`;
