@@ -4,28 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NEXTFLIX - Xem Phim</title>
+  <link rel="stylesheet" href="css/style.css">
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #0f0f0f;
       color: #fff;
-    }
-    .header, .footer {
-      background: #000;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav-menu {
-      list-style: none;
-      display: flex;
-      gap: 1.5rem;
-    }
-    .nav-menu a, .logo, .footer a {
-      color: #fff;
-      text-decoration: none;
     }
     .main-content {
       padding: 6rem 2rem 2rem;
@@ -55,14 +40,27 @@
 </head>
 <body>
 
+<!-- ✅ Header giống index.html -->
 <header class="header">
-  <a href="index.html" class="logo">NEXTFLIX</a>
-  <ul class="nav-menu">
-    <li><a href="index.html">Trang chủ</a></li>
-    <li><a href="phimLe.html">Phim lẻ</a></li>
-    <li><a href="phimBo.html">Phim bộ</a></li>
-    <li><a href="hoatHinh.html">Hoạt hình</a></li>
-  </ul>
+  <nav class="nav-container">
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+      <a href="index.html" class="logo">NEXTFLIX</a>
+      <div class="genre-dropdown">
+        <button class="genre-btn">Thể loại ▾</button>
+        <ul class="genre-list" id="genreDropdownList"></ul>
+      </div>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="index.html">Trang chủ</a></li>
+      <li><a href="phimLe.html">Phim lẻ</a></li>
+      <li><a href="phimBo.html">Phim bộ</a></li>
+      <li><a href="hoatHinh.html">Hoạt hình</a></li>
+      <li><a href="marvel.html">Marvel</a></li>
+    </ul>
+    <div class="search-container">
+      <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
+    </div>
+  </nav>
 </header>
 
 <main class="main-content">
@@ -142,5 +140,30 @@ firebase.database().ref("movies").once("value").then(snapshot => {
   detailContainer.innerHTML = html;
 });
 </script>
+
+<!-- Dropdown & Tìm kiếm -->
+<script>
+firebase.database().ref("genres").once("value").then(snapshot => {
+  const genres = Object.values(snapshot.val() || {});
+  const list = document.getElementById("genreDropdownList");
+  list.innerHTML = "";
+  genres.forEach(genre => {
+    const li = document.createElement("li");
+    li.textContent = genre.name;
+    li.onclick = () => window.location.href = `index.html#${genre.id}`;
+    list.appendChild(li);
+  });
+});
+
+document.querySelector('.search-box').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    const query = this.value.trim();
+    if (query) {
+      window.location.href = `timkiem.html?query=${encodeURIComponent(query)}`;
+    }
+  }
+});
+</script>
+
 </body>
 </html>
