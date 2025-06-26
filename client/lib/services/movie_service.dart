@@ -137,4 +137,34 @@ class MovieService {
 
     return null;
   }
+
+  Future<List<Movie>> searchMovies(String keyword) async {
+    final snapshot = await _db.child('movies').get();
+    if (!snapshot.exists) return [];
+
+    final data = snapshot.value;
+
+    Iterable items;
+    if (data is List) {
+      items = data.where(
+        (e) =>
+            e != null &&
+            e['title'] != null &&
+            e['title'].toString().toLowerCase().contains(keyword.toLowerCase()),
+      );
+    } else if (data is Map) {
+      items = data.values.where(
+        (e) =>
+            e != null &&
+            e['title'] != null &&
+            e['title'].toString().toLowerCase().contains(keyword.toLowerCase()),
+      );
+    } else {
+      return [];
+    }
+
+    return items
+        .map((e) => Movie.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
 }
