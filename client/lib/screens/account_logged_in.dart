@@ -25,7 +25,13 @@ class AccountLoggedIn extends StatelessWidget {
               child:
                   user.photoURL == null
                       ? Text(
-                        displayName[0].toUpperCase(),
+                        (displayName.isNotEmpty
+                                ? displayName[0]
+                                : (user.email?.isNotEmpty ?? false)
+                                ? user.email![0]
+                                : 'U' // fallback cuối cùng nếu email cũng null
+                                )
+                            .toUpperCase(),
                         style: const TextStyle(
                           fontSize: 24,
                           color: Colors.white,
