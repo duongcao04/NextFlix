@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   const db = firebase.database();
 
+  let allMovies = [];
+  let allGenres = [];
+
   function createMovieCard(movie) {
     return `
-      <a href="xemphimchitiet.html?id=${movie.id}" class="movie-card">
+      <a href="thongtinphim.html?id=${movie.id}" class="movie-card">
         <div class="movie-poster" style="background-image: url('${movie.images?.posters || ''}'); background-size: cover;">
           <div class="play-overlay">▶</div>
         </div>
@@ -34,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
           ${matchedMovies.map(createMovieCard).join('')}
         </div>
       `;
-
       container.appendChild(section);
     });
   }
@@ -47,6 +49,30 @@ document.addEventListener('DOMContentLoaded', () => {
         <a href="#">Xem chủ đề &rarr;</a>
       </div>
     `).join('');
+  }
+
+  function renderGenreDropdown(genres, movies) {
+    const list = document.getElementById("genreDropdownList");
+    list.innerHTML = "";
+
+    genres.forEach(genre => {
+      const li = document.createElement("li");
+      li.textContent = genre.name;
+      li.addEventListener("click", () => {
+        const matchedMovies = movies.filter(movie => genre.movies?.includes(movie.id));
+        const section = document.getElementById("genreSections");
+        section.innerHTML = `
+          <section class="section">
+            <h2 class="section-title">${genre.icon || ''} ${genre.name}</h2>
+            <div class="movie-grid">
+              ${matchedMovies.map(createMovieCard).join("")}
+            </div>
+          </section>
+        `;
+        section.scrollIntoView({ behavior: 'smooth' });
+      });
+      list.appendChild(li);
+    });
   }
 
   function loadBannersFromFeatured() {
@@ -73,8 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
           padding-left: 2rem;
           border-radius: 12px;
           text-decoration: none;
-        ">
-        </a>
+        "></a>
       `).join('');
 
       new Swiper(".mySwiper", {
@@ -91,10 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load phim và thể loại
   db.ref('movies').once('value').then(movieSnap => {
-    const allMovies = Object.values(movieSnap.val() || {});
+    allMovies = Object.values(movieSnap.val() || {});
     db.ref('genres').once('value').then(genreSnap => {
-      const genres = Object.values(genreSnap.val() || {});
-      renderMoviesByGenres(genres, allMovies);
+      allGenres = Object.values(genreSnap.val() || {});
+      renderMoviesByGenres(allGenres, allMovies);
+      renderGenreDropdown(allGenres, allMovies); // ✅ sửa chỗ này
     });
   });
 
@@ -104,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTopicCards(topics);
   });
 
-  // ✅ GỌI banner để swiper hoạt động
+  // Banner
   loadBannersFromFeatured();
 
   // Tìm kiếm
@@ -117,9 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Hiệu ứng scroll
+  // Scroll hiệu ứng
   window.addEventListener('scroll', function () {
     const header = document.querySelector('.header');
-    header.style.background = window.scrollY > 100 ? 'rgba(0, 0, 0, 0.95)' : 'rgba(0, 0, 0, 0.9)';
+    header.style.background = window.scrollY > 100 
+  ? 'linear-gradient(135deg, #002F6C, #0056b3)' 
+  : 'linear-gradient(135deg, #002F6C, #0056b3)';
+
   });
 });
