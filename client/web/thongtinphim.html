@@ -6,7 +6,7 @@
   <title>Thông Tin Phim - NEXTFLIX</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/Auth.css">
-   <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/loading.css">
   <style>
     .movie-banner {
       background-size: cover;
@@ -83,69 +83,67 @@
   </style>
 </head>
 <body>
-    <div id="loadingScreen">
+  <div id="loadingScreen">
     <div class="loader-wrapper">
       <div class="loader"></div>
       <img src="../assets/images/logo.png" alt="Logo" class="logo-center" />
     </div>
     <p class="loading-text">Đang tải dữ liệu từ NEXTFLIX...</p>
   </div>
+
   <div id="mainContent" style="display: none;">
-  <header class="header">
-    <nav class="nav-container">
-      <a href="index.html" class="logo">NEXTFLIX</a>
-      <ul class="nav-menu">
-        <li><a href="index.html">Trang chủ</a></li>
-        <li><a href="phimLe.html">Phim lẻ</a></li>
-        <li><a href="phimBo.html">Phim bộ</a></li>
-        <li><a href="hoatHinh.html">Hoạt hình</a></li>
-      </ul>
-      <div id="authContainer" class="auth-container">
-  <button id="loginBtn">Đăng nhập</button>
-  <button id="logoutBtn" style="display: none;">Đăng xuất</button>
-  <span id="userEmail"></span>
-</div>
-    </nav>
-
-  </header>
-
-  <main class="main-content">
-    <section class="movie-banner" id="movieBanner">
-      <div class="movie-left">
-        <h1 id="movieTitle">Đang tải...</h1>
-        <p id="movieOverview">Vui lòng đợi...</p>
-      </div>
-      <div class="movie-right">
-        <div class="movie-info-text" id="movieInfoBox">
-          <!-- thông tin phim ở đây -->
+    <header class="header">
+      <nav class="nav-container">
+        <a href="index.html" class="logo">NEXTFLIX</a>
+        <ul class="nav-menu">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="phimLe.html">Phim lẻ</a></li>
+          <li><a href="phimBo.html">Phim bộ</a></li>
+          <li><a href="hoatHinh.html">Hoạt hình</a></li>
+        </ul>
+        <div id="authContainer" class="auth-container">
+          <button id="loginBtn">Đăng nhập</button>
+          <button id="logoutBtn" style="display: none;">Đăng xuất</button>
+          <span id="userEmail"></span>
         </div>
-        <a href="#" id="watchLink" class="btn-play">▶ Xem ngay</a>
-      </div>
-    </section>
-  </main>
+      </nav>
+    </header>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-links">
-        <a href="#">Về chúng tôi</a>
-        <a href="#">Liên hệ</a>
-        <a href="#">Chính sách</a>
-        <a href="#">DMCA</a>
+    <main class="main-content">
+      <section class="movie-banner" id="movieBanner">
+        <div class="movie-left">
+          <h1 id="movieTitle">Đang tải...</h1>
+          <p id="movieOverview">Vui lòng đợi...</p>
+        </div>
+        <div class="movie-right">
+          <div class="movie-info-text" id="movieInfoBox">
+            <!-- Thông tin chi tiết phim sẽ được load -->
+          </div>
+          <a href="#" id="watchLink" class="btn-play">▶ Xem ngay</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">Về chúng tôi</a>
+          <a href="#">Liên hệ</a>
+          <a href="#">Chính sách</a>
+          <a href="#">DMCA</a>
+        </div>
+        <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
+        <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
       </div>
-      <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
-      <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
-    </div>
-  </footer>
-  <div id="loadingScreen">
-  <div class="logo-loading">
-    <img src="../../client/assets/images/logo.png" alt="Loading">
-    <p class="text">Xem Phim Miễn Phí Cực Nhanh, Chất Lượng Cao Và Cập Nhật Liên Tục</p>
-  </div>
-</div>
+    </footer>
   </div>
 
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Config + Data Logic -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCU0PcgMNtoBjLKYWHPC9sMF3Vap9-Yb8Y",
@@ -164,38 +162,33 @@
       const movies = snapshot.val() || {};
       const movie = Object.values(movies).find(m => m.id === movieId);
 
-      const titleEl = document.getElementById("movieTitle");
-      const overviewEl = document.getElementById("movieOverview");
-      const bannerEl = document.getElementById("movieBanner");
-      const watchBtn = document.getElementById("watchLink");
-      const infoBox = document.getElementById("movieInfoBox");
-
       if (!movie) {
-        titleEl.textContent = "Không tìm thấy phim.";
-        overviewEl.textContent = "";
+        document.getElementById("movieTitle").textContent = "Không tìm thấy phim.";
+        document.getElementById("movieOverview").textContent = "";
+        document.getElementById("loadingScreen").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
         return;
       }
 
-      // Dữ liệu hiển thị
-      bannerEl.style.backgroundImage = `url('${movie.images?.backdrops || movie.images?.horizontal_posters || ''}')`;
-      titleEl.textContent = movie.title;
-      overviewEl.textContent = movie.overview || "Không có mô tả.";
-      watchBtn.href = `xemphimchitiet.html?id=${movie.id}`;
+      document.getElementById("movieBanner").style.backgroundImage = `url('${movie.images?.backdrops || movie.images?.horizontal_posters || ''}')`;
+      document.getElementById("movieTitle").textContent = movie.title;
+      document.getElementById("movieOverview").textContent = movie.overview || "Không có mô tả.";
+      document.getElementById("watchLink").href = `xemphimchitiet.html?id=${movie.id}`;
 
-      infoBox.innerHTML = `
+      document.getElementById("movieInfoBox").innerHTML = `
         <p><strong>Năm:</strong> ${movie.year || 'N/A'}</p>
         <p><strong>Thể loại:</strong> ${(movie.genre_names || []).join(', ')}</p>
         <p><strong>Loại:</strong> ${movie.type === 2 ? 'Phim bộ' : 'Phim lẻ'}</p>
         <p><strong>Đánh giá:</strong> ${movie.rating || 'Chưa có'}</p>
       `;
+
+      document.getElementById("loadingScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
     });
   </script>
-  <!-- Firebase Auth -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-<!-- Auth Logic -->
-<script src="js/auth.js"></script>
-<script src="js/main.js"></script>
-
+  <!-- Custom Auth Logic -->
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

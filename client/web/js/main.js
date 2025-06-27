@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const bannerWrapper = document.getElementById('bannerWrapper');
       bannerWrapper.innerHTML = featured.slice(0, 5).map(movie => `
-        <a href="xemphimchitiet.html?id=${movie.id}" class="swiper-slide" style="
+        <a href="thongtinphim.html?id=${movie.id}" class="swiper-slide" style="
           background-image: url('${movie.images?.horizontal_posters || movie.images?.backdrops || ''}');
           background-size: cover;
           background-position: center;
