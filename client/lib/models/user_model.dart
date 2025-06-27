@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:nextflix/models/watch_history_model.dart';
 
 class UserModel extends Equatable {
   final String? id;
@@ -14,7 +15,7 @@ class UserModel extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final Map<String, dynamic>? customData;
-  final List<WatchingMovie> watchingMovie;
+  final List<WatchHistory> watchHistory;
   final List<String> wishlist;
   final List<String> searchRecently;
 
@@ -31,7 +32,7 @@ class UserModel extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.customData,
-    this.watchingMovie = const [],
+    this.watchHistory = const [],
     this.wishlist = const [],
     this.searchRecently = const [],
   });
@@ -65,10 +66,10 @@ class UserModel extends Equatable {
               ? (data['updatedAt'] as Timestamp).toDate()
               : null,
       customData: data['customData'],
-      watchingMovie:
-          data['watchingMovie'] != null
-              ? (data['watchingMovie'] as List)
-                  .map((movie) => WatchingMovie.fromJson(movie))
+      watchHistory:
+          data['watchHistory'] != null
+              ? (data['watchHistory'] as List)
+                  .map((movie) => WatchHistory.fromJson(movie))
                   .toList()
               : [],
       wishlist:
@@ -93,7 +94,7 @@ class UserModel extends Equatable {
       'role': role.name,
       'isActive': isActive,
       'customData': customData,
-      'watchingMovie': watchingMovie.map((movie) => movie.toJson()).toList(),
+      'watchHistory': watchHistory.map((movie) => movie.toJson()).toList(),
       'wishlist': wishlist,
       'searchRecently': searchRecently,
       // createdAt and updatedAt will be handled by FirebaseService
@@ -123,10 +124,10 @@ class UserModel extends Equatable {
       updatedAt:
           json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       customData: json['customData'],
-      watchingMovie:
-          json['watchingMovie'] != null
-              ? (json['watchingMovie'] as List)
-                  .map((movie) => WatchingMovie.fromJson(movie))
+      watchHistory:
+          json['watchHistory'] != null
+              ? (json['watchHistory'] as List)
+                  .map((movie) => WatchHistory.fromJson(movie))
                   .toList()
               : [],
       wishlist:
@@ -153,7 +154,7 @@ class UserModel extends Equatable {
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'customData': customData,
-      'watchingMovie': watchingMovie.map((movie) => movie.toJson()).toList(),
+      'watchHistory': watchHistory.map((movie) => movie.toJson()).toList(),
       'wishlist': wishlist,
       'searchRecently': searchRecently,
     };
@@ -173,7 +174,7 @@ class UserModel extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     Map<String, dynamic>? customData,
-    List<WatchingMovie>? watchingMovie,
+    List<WwatchingHistory>? wwatchingHistory,
     List<String>? wishlist,
     List<String>? searchRecently,
   }) {
@@ -190,7 +191,7 @@ class UserModel extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       customData: customData ?? this.customData,
-      watchingMovie: watchingMovie ?? this.watchingMovie,
+      watchHistory: watchHistory ?? this.watchHistory,
       wishlist: wishlist ?? this.wishlist,
       searchRecently: searchRecently ?? this.searchRecently,
     );
@@ -212,16 +213,16 @@ class UserModel extends Equatable {
 
   // New helper methods for movie-related features
   bool hasWatchedMovie(String movieId) {
-    return watchingMovie.any((movie) => movie.movieId == movieId);
+    return watchHistory.any((movie) => movie.id == movieId);
   }
 
   bool isInWishlist(String movieId) {
     return wishlist.contains(movieId);
   }
 
-  WatchingMovie? getMovieProgress(String movieId) {
+  WatchHistory? getMovieProgress(String movieId) {
     try {
-      return watchingMovie.firstWhere((movie) => movie.movieId == movieId);
+      return watchHistory.firstWhere((movie) => movie.id == movieId);
     } catch (e) {
       return null;
     }
@@ -241,7 +242,7 @@ class UserModel extends Equatable {
     createdAt,
     updatedAt,
     customData,
-    watchingMovie,
+    watchHistory,
     wishlist,
     searchRecently,
   ];
@@ -253,19 +254,19 @@ class UserModel extends Equatable {
 }
 
 // Model for movie recently watched
-class WatchingMovie extends Equatable {
+class WwatchingHistory extends Equatable {
   final String movieId;
   final String movieName;
   final ViewingProgress? viewing;
 
-  const WatchingMovie({
+  const WwatchingHistory({
     required this.movieId,
     required this.movieName,
     this.viewing,
   });
 
-  factory WatchingMovie.fromJson(Map<String, dynamic> json) {
-    return WatchingMovie(
+  factory WwatchingHistory.fromJson(Map<String, dynamic> json) {
+    return WwatchingHistory(
       movieId: json['movieId'] ?? '',
       movieName: json['movieName'] ?? '',
       viewing:
@@ -283,12 +284,12 @@ class WatchingMovie extends Equatable {
     };
   }
 
-  WatchingMovie copyWith({
+  WwatchingHistory copyWith({
     String? movieId,
     String? movieName,
     ViewingProgress? viewing,
   }) {
-    return WatchingMovie(
+    return WwatchingHistory(
       movieId: movieId ?? this.movieId,
       movieName: movieName ?? this.movieName,
       viewing: viewing ?? this.viewing,

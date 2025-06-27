@@ -11,7 +11,11 @@ class UserRepository {
   Future<void> createUser(UserModel user) async {
     try {
       final userData = user.toJson();
-      await _firebaseService.create('users', userData);
+      await _firebaseService.createWithKey(
+        'users',
+        user.id.toString(),
+        userData,
+      );
     } catch (e) {
       throw Exception('Failed to create user: $e');
     }
