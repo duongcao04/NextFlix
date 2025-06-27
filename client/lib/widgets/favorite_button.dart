@@ -37,12 +37,16 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         widget.movie!.id,
       );
 
+      // Kiểm tra mounted trước khi gọi setState
+      if (!mounted) return;
       setState(() => _isFavorite = isFavorite);
     } else if (widget.actor != null) {
       final isFavorite = await FavoriteService.instance.isActorFavorite(
         widget.actor!.id,
       );
 
+      // Kiểm tra mounted trước khi gọi setState
+      if (!mounted) return;
       setState(() => _isFavorite = isFavorite);
     }
   }
@@ -50,6 +54,8 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   void _toggleFavorite() async {
     if (_isLoading) return;
 
+    // Kiểm tra mounted trước khi gọi setState
+    if (!mounted) return;
     setState(() => _isLoading = true);
 
     try {
@@ -71,6 +77,8 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         }
       }
 
+      // Kiểm tra mounted trước khi gọi setState
+      if (!mounted) return;
       setState(() => _isFavorite = !_isFavorite);
 
       // Show feedback
@@ -96,7 +104,10 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         );
       }
     } finally {
-      setState(() => _isLoading = false);
+      // Kiểm tra mounted trước khi gọi setState
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
