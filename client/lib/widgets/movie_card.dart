@@ -19,7 +19,7 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('👉 Tapped movie: ${movie.title}, ID: ${movie.id}');
+        debugPrint('👉 Tapped movie: ${movie.title}, ID: ${movie.id}');
         Navigator.push(
           context,
           MaterialPageRoute(

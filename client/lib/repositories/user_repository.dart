@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:nextflix/models/user_model.dart';
 import 'package:nextflix/services/firebase_service.dart';
 
@@ -10,8 +11,7 @@ class UserRepository {
   Future<void> createUser(UserModel user) async {
     try {
       final userData = user.toJson();
-      await _firebaseService.createWithKey('users', user.id!, userData);
-      print('User created successfully: ${user.id}');
+      await _firebaseService.create('users', userData);
     } catch (e) {
       throw Exception('Failed to create user: $e');
     }
@@ -29,7 +29,7 @@ class UserRepository {
       }
       return null;
     } catch (e) {
-      print('Error getting user: $e');
+      debugPrint('Error getting user: $e');
       return null;
     }
   }
@@ -50,7 +50,7 @@ class UserRepository {
       }
       return [];
     } catch (e) {
-      print('Error getting all users: $e');
+      debugPrint('Error getting all users: $e');
       return [];
     }
   }
@@ -69,7 +69,7 @@ class UserRepository {
           .map((data) => UserModel.fromJson(data))
           .toList();
     } catch (e) {
-      print('Error searching users by email: $e');
+      debugPrint('Error searching users by email: $e');
       return [];
     }
   }
@@ -88,7 +88,7 @@ class UserRepository {
           .map((data) => UserModel.fromJson(data))
           .toList();
     } catch (e) {
-      print('Error getting users by role: $e');
+      debugPrint('Error getting users by role: $e');
       return [];
     }
   }
@@ -97,7 +97,7 @@ class UserRepository {
   Future<void> updateUser(String userId, Map<String, dynamic> updates) async {
     try {
       await _firebaseService.update('users/$userId', updates);
-      print('User updated successfully: $userId');
+      debugPrint('User updated successfully: $userId');
     } catch (e) {
       throw Exception('Failed to update user: $e');
     }
@@ -107,7 +107,7 @@ class UserRepository {
   Future<void> deleteUser(String userId) async {
     try {
       await _firebaseService.delete('users/$userId');
-      print('User deleted successfully: $userId');
+      debugPrint('User deleted successfully: $userId');
     } catch (e) {
       throw Exception('Failed to delete user: $e');
     }

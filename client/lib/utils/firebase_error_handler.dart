@@ -43,16 +43,16 @@ class FirestoreErrorHandler {
 
   static void logError(String operation, dynamic error, {String? userId}) {
     if (kDebugMode) {
-      print('=== FIRESTORE ERROR ===');
-      print('Operation: $operation');
-      print('User ID: ${userId ?? 'Unknown'}');
-      print('Error: $error');
-      print('Error Type: ${error.runtimeType}');
+      debugPrint('=== FIRESTORE ERROR ===');
+      debugPrint('Operation: $operation');
+      debugPrint('User ID: ${userId ?? 'Unknown'}');
+      debugPrint('Error: $error');
+      debugPrint('Error Type: ${error.runtimeType}');
       if (error is FirebaseException) {
-        print('Error Code: ${error.code}');
-        print('Error Message: ${error.message}');
+        debugPrint('Error Code: ${error.code}');
+        debugPrint('Error Message: ${error.message}');
       }
-      print('=======================');
+      debugPrint('=======================');
     }
   }
 

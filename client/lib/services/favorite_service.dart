@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/favorite_model.dart';
 import '../models/movie_model.dart';
 
@@ -95,17 +98,22 @@ class FavoriteService {
     print('✅ Removed from favorites: $favoriteId');
   }
 
-  // Xóa nhiều mục khỏi yêu thích
+  // Xóa nhiều khỏi yêu thích
   Future<void> removeMultipleFromFavorites(List<String> favoriteIds) async {
     for (final id in favoriteIds) {
       await _favoritesRef.child(id).remove();
     }
-    print('✅ Removed ${favoriteIds.length} items from favorites');
   }
 
-  // Xóa tất cả yêu thích
-  Future<void> clearAllFavorites() async {
-    await _favoritesRef.remove();
-    print('🗑️ Cleared all favorites');
+  // Tìm kiếm trong yêu thích
+  Future<List<Favorite>> searchFavorites(String query) async {
+    final favorites = await getFavorites();
+
+    if (query.isEmpty) return favorites;
+
+    return favorites.where((f) {
+      return f.title.toLowerCase().contains(query.toLowerCase()) ||
+          f.subtitle.toLowerCase().contains(query.toLowerCase());
+    }).toList();
   }
 }

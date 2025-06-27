@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:nextflix/models/user_model.dart';
 import 'package:nextflix/repositories/user_repository.dart';
 
@@ -16,16 +17,16 @@ class UserService {
           .listen(
             (updatedUser) {
               if (updatedUser != null) {
-                print('User updated: ${updatedUser.displayName}');
+                debugPrint('User updated: ${updatedUser.displayName}');
                 // Handle user updates in UI
               }
             },
             onError: (error) {
-              print('Error streaming user: $error');
+              debugPrint('Error streaming user: $error');
             },
           );
     } catch (e) {
-      print('Error creating user: $e');
+      debugPrint('Error creating user: $e');
     }
   }
 
@@ -44,7 +45,7 @@ class UserService {
             user.email.toLowerCase().contains(searchTerm.toLowerCase());
       }).toList();
     } catch (e) {
-      print('Error searching users: $e');
+      debugPrint('Error searching users: $e');
       return [];
     }
   }

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Episode {
   final int episodeNumber;
   final String embedVideo;
@@ -77,12 +79,12 @@ class Movie {
       return 'https://img.ophim.live/uploads/movies/$path';
     }
 
-    print('Raw seasons data: ${json['seasons']}');
+    debugPrint('Raw seasons data: ${json['seasons']}');
 
     List<Episode> episodes = [];
     try {
       final seasons = json['seasons'];
-      print('✅ SEASONS: $seasons'); // <-- LOG kiểm tra
+      debugPrint('✅ SEASONS: $seasons'); // <-- LOG kiểm tra
 
       final season0 = seasons?[0];
       if (season0 != null && season0['episodes'] is List) {
@@ -91,12 +93,12 @@ class Movie {
                 .map((e) => Episode.fromJson(Map<String, dynamic>.from(e)))
                 .toList();
 
-        print('✅ PARSED ${episodes.length} episodes');
+        debugPrint('✅ PARSED ${episodes.length} episodes');
       } else {
-        print('⚠️ Không có season[0] hoặc episodes không hợp lệ');
+        debugPrint('⚠️ Không có season[0] hoặc episodes không hợp lệ');
       }
     } catch (e) {
-      print('❌ Lỗi khi parse episodes: $e');
+      debugPrint('❌ Lỗi khi parse episodes: $e');
     }
 
     return Movie(

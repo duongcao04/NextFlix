@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/watch_history_model.dart';
 import '../models/movie_model.dart';
@@ -24,7 +25,7 @@ class WatchHistoryService {
           (a, b) => b.watchedAt.compareTo(a.watchedAt),
         ); // Sắp xếp theo thời gian mới nhất
     } catch (e) {
-      print('Error loading watch history: $e');
+      debugPrint('Error loading watch history: $e');
       return [];
     }
   }
@@ -71,7 +72,7 @@ class WatchHistoryService {
           history.map((item) => jsonEncode(item.toJson())).toList();
       await prefs.setStringList(_historyKey, historyJson);
     } catch (e) {
-      print('Error adding to watch history: $e');
+      debugPrint('Error adding to watch history: $e');
     }
   }
 
@@ -86,7 +87,7 @@ class WatchHistoryService {
           history.map((item) => jsonEncode(item.toJson())).toList();
       await prefs.setStringList(_historyKey, historyJson);
     } catch (e) {
-      print('Error removing from watch history: $e');
+      debugPrint('Error removing from watch history: $e');
     }
   }
 
@@ -101,7 +102,7 @@ class WatchHistoryService {
           history.map((item) => jsonEncode(item.toJson())).toList();
       await prefs.setStringList(_historyKey, historyJson);
     } catch (e) {
-      print('Error removing multiple from watch history: $e');
+      debugPrint('Error removing multiple from watch history: $e');
     }
   }
 
@@ -111,7 +112,7 @@ class WatchHistoryService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_historyKey);
     } catch (e) {
-      print('Error clearing watch history: $e');
+      debugPrint('Error clearing watch history: $e');
     }
   }
 

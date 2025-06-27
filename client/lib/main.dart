@@ -13,12 +13,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 void main() async {
-  // Ẩn thanh trạng thái và thanh điều hướng hệ thống
-  // SystemChrome.setEnabledSystemUIMode(
-  //   SystemUiMode.edgeToEdge,
-  //   overlays: [SystemUiOverlay.top],
-  // );
-
   // Khởi tạo Firebase App
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

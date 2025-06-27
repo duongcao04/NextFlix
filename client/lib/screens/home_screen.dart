@@ -182,8 +182,8 @@ class HomeScreen extends StatelessWidget {
           );
         }
         print("Lỗi nè");
-        print('🎯 Topics loaded: ${snapshot.data?.length}');
-        print('🔥 Raw data: ${snapshot.data}');
+        debugPrint('🎯 Topics loaded: ${snapshot.data?.length}');
+        debugPrint('🔥 Raw data: ${snapshot.data}');
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
