@@ -50,29 +50,29 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleGoogleSignIn() async {
-    print('🔵 LoginScreen: Starting Google Sign-In...');
+    debugPrint('🔵 LoginScreen: Starting Google Sign-In...');
     setState(() => _isLoading = true);
 
     try {
       final authBloc = context.read<AuthenticationBloc>();
-      print('🔵 LoginScreen: Got AuthBloc, calling signInWithGoogle...');
+      debugPrint('🔵 LoginScreen: Got AuthBloc, calling signInWithGoogle...');
 
       final userCredential = await authBloc.signInWithGoogle();
-      print(
+      debugPrint(
         '🔵 LoginScreen: signInWithGoogle returned: ${userCredential != null}',
       );
 
       if (userCredential != null && mounted) {
-        print('🟢 LoginScreen: User signed in successfully');
+        debugPrint('🟢 LoginScreen: User signed in successfully');
         // BlocListener sẽ handle navigation
       } else {
-        print('🟡 LoginScreen: Sign-in cancelled or failed');
+        debugPrint('🟡 LoginScreen: Sign-in cancelled or failed');
         if (mounted) {
           _showErrorSnackBar('Đăng nhập Google bị hủy');
         }
       }
     } catch (e) {
-      print('🔴 LoginScreen: Google sign-in error: $e');
+      debugPrint('🔴 LoginScreen: Google sign-in error: $e');
       if (mounted) {
         _showErrorSnackBar(
           'Đăng nhập Google thất bại: ${_getErrorMessage(e.toString())}',
@@ -93,13 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
       final user = await authBloc.signInWithFacebook();
 
       if (user != null && mounted) {
-        print('Logged in successfully! User: ${user.displayName}');
+        debugPrint('Logged in successfully! User: ${user.displayName}');
         // The AuthenticationBloc will automatically handle the navigation via listener
       } else {
         if (mounted) {
           _showErrorSnackBar('Đăng nhập Facebook bị hủy');
         }
-        print('Facebook login failed or cancelled');
+        debugPrint('Facebook login failed or cancelled');
       }
     } catch (e) {
       if (mounted) {
@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'Đăng nhập Facebook thất bại: ${_getErrorMessage(e.toString())}',
         );
       }
-      print('Facebook login error: $e');
+      debugPrint('Facebook login error: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

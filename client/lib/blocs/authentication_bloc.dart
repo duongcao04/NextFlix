@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:equatable/equatable.dart';
@@ -160,9 +161,6 @@ class AuthenticationBloc
       UserModel? user = await _userRepository.getUserById(firebaseUser.uid);
 
       if (user == null) {
-        // Create new user in Firestore for first-time users
-        print('Creating new user document for: ${firebaseUser.email}');
-
         user = UserModel(
           id: firebaseUser.uid,
           email: firebaseUser.email ?? '',
@@ -171,17 +169,20 @@ class AuthenticationBloc
           photoURL: firebaseUser.photoURL,
           phoneNumber: firebaseUser.phoneNumber,
           role: UserRole.user,
+          watchingMovie: const [],
+          wishlist: const [],
+          searchRecently: const [],
           isActive: true,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         );
 
-        // Create user document in Firestore
+        // Create user document in Firebase DB
         try {
           await _userRepository.createUser(user);
-          print('User document created successfully');
+          debugPrint('User document created successfully');
         } catch (createError) {
-          print('Error creating user document: $createError');
+          debugPrint('Error creating user document: $createError');
           // If creation fails, still proceed with the user object we have
           // This prevents blocking login for Firestore issues
         }
@@ -216,9 +217,9 @@ class AuthenticationBloc
               photoURL: firebaseUser.photoURL ?? user.photoURL,
               updatedAt: DateTime.now(),
             );
-            print('User document updated successfully');
+            debugPrint('User document updated successfully');
           } catch (updateError) {
-            print('Error updating user document: $updateError');
+            debugPrint('Error updating user document: $updateError');
             // Continue with existing user data if update fails
           }
         }
@@ -227,7 +228,7 @@ class AuthenticationBloc
       // Check if user account is active
       if (user!.isActive) {
         emit(AuthenticationAuthenticated(user: user));
-        print('User authenticated successfully: ${user.email}');
+        debugPrint('User authenticated successfully: ${user.email}');
       } else {
         // User is deactivated
         await _firebaseService.auth.signOut();
@@ -237,10 +238,10 @@ class AuthenticationBloc
                 'Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ hỗ trợ.',
           ),
         );
-        print('User account is deactivated: ${user.email}');
+        debugPrint('User account is deactivated: ${user.email}');
       }
     } catch (e) {
-      print('Error in _handleAuthenticatedUser: $e');
+      debugPrint('Error in _handleAuthenticatedUser: $e');
 
       // If there's any error with Firestore but we have a valid Firebase user,
       // create a minimal user object to allow login
@@ -259,7 +260,7 @@ class AuthenticationBloc
         );
 
         emit(AuthenticationAuthenticated(user: fallbackUser));
-        print('Using fallback user data due to Firestore error');
+        debugPrint('Using fallback user data due to Firestore error');
 
         // Optionally, try to create the user document in the background
         _createUserInBackground(firebaseUser);
@@ -291,9 +292,9 @@ class AuthenticationBloc
         );
 
         await _userRepository.createUser(user);
-        print('Background user creation successful');
+        debugPrint('Background user creation successful');
       } catch (e) {
-        print('Background user creation failed: $e');
+        debugPrint('Background user creation failed: $e');
       }
     });
   }
@@ -301,12 +302,14 @@ class AuthenticationBloc
   // Helper methods for authentication operations
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      print('🔵 AuthBloc: Starting Google sign-in...');
+      debugPrint('🔵 AuthBloc: Starting Google sign-in...');
 
       final userCredential = await _firebaseService.signInWithGoogle();
 
+      debugPrint('DEBUG' + userCredential.toString());
+
       if (userCredential != null) {
-        print(
+        debugPrint(
           '🔵 AuthBloc: Google sign-in successful: ${userCredential.user?.email}',
         );
 
@@ -329,32 +332,32 @@ class AuthenticationBloc
         // Lưu vào Realtime Database
         try {
           await _userRepository.createUser(user);
-          print('🟢 AuthBloc: User saved to database successfully');
+          debugPrint('🟢 AuthBloc: User saved to database successfully');
         } catch (dbError) {
-          print('🟡 AuthBloc: Database save error (continuing): $dbError');
+          debugPrint('🟡 AuthBloc: Database save error (continuing): $dbError');
           // Không throw error ở đây, vẫn cho phép đăng nhập
         }
 
         // AuthState sẽ được update tự động qua listener
         return userCredential;
       } else {
-        print('🟡 AuthBloc: Google sign-in was cancelled');
+        debugPrint('🟡 AuthBloc: Google sign-in was cancelled');
         return null;
       }
     } catch (e) {
-      print('🔴 AuthBloc: Google sign-in error: $e');
+      debugPrint('🔴 AuthBloc: Google sign-in error: $e');
       throw _handleAuthException(e);
     }
   }
 
   Future<User?> signInWithFacebook() async {
     try {
-      print('🔵 AuthBloc: Starting Facebook sign-in...');
+      debugPrint('🔵 AuthBloc: Starting Facebook sign-in...');
 
       final user = await _firebaseService.signInWithFacebook();
 
       if (user != null) {
-        print('🔵 AuthBloc: Facebook sign-in successful: ${user.email}');
+        debugPrint('🔵 AuthBloc: Facebook sign-in successful: ${user.email}');
 
         // Tạo user model cho Realtime Database
         final userModel = UserModel(
@@ -373,18 +376,18 @@ class AuthenticationBloc
         // Lưu vào Realtime Database
         try {
           await _userRepository.createUser(userModel);
-          print('🟢 AuthBloc: User saved to database successfully');
+          debugPrint('🟢 AuthBloc: User saved to database successfully');
         } catch (dbError) {
-          print('🟡 AuthBloc: Database save error (continuing): $dbError');
+          debugPrint('🟡 AuthBloc: Database save error (continuing): $dbError');
         }
 
         return user;
       } else {
-        print('🟡 AuthBloc: Facebook sign-in was cancelled');
+        debugPrint('🟡 AuthBloc: Facebook sign-in was cancelled');
         return null;
       }
     } catch (e) {
-      print('🔴 AuthBloc: Facebook sign-in error: $e');
+      debugPrint('🔴 AuthBloc: Facebook sign-in error: $e');
       throw _handleAuthException(e);
     }
   }

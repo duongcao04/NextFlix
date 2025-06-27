@@ -29,7 +29,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       movie = result;
       isLoading = false;
     });
-    print('Số tập phim: ${movie?.episodes.length}');
+    debugPrint('Số tập phim: ${movie?.episodes.length}');
   }
 
   void _scrollToEpisodes() {

@@ -84,7 +84,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         );
       }
     } catch (e) {
-      print('Error toggling favorite: $e');
+      debugPrint('Error toggling favorite: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

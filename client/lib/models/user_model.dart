@@ -14,6 +14,9 @@ class UserModel extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final Map<String, dynamic>? customData;
+  final List<WatchingMovie> watchingMovie;
+  final List<String> wishlist;
+  final List<String> searchRecently;
 
   const UserModel({
     this.id,
@@ -28,6 +31,9 @@ class UserModel extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.customData,
+    this.watchingMovie = const [],
+    this.wishlist = const [],
+    this.searchRecently = const [],
   });
 
   // Create from Firestore document
@@ -59,6 +65,18 @@ class UserModel extends Equatable {
               ? (data['updatedAt'] as Timestamp).toDate()
               : null,
       customData: data['customData'],
+      watchingMovie:
+          data['watchingMovie'] != null
+              ? (data['watchingMovie'] as List)
+                  .map((movie) => WatchingMovie.fromJson(movie))
+                  .toList()
+              : [],
+      wishlist:
+          data['wishlist'] != null ? List<String>.from(data['wishlist']) : [],
+      searchRecently:
+          data['searchRecently'] != null
+              ? List<String>.from(data['searchRecently'])
+              : [],
     );
   }
 
@@ -75,6 +93,9 @@ class UserModel extends Equatable {
       'role': role.name,
       'isActive': isActive,
       'customData': customData,
+      'watchingMovie': watchingMovie.map((movie) => movie.toJson()).toList(),
+      'wishlist': wishlist,
+      'searchRecently': searchRecently,
       // createdAt and updatedAt will be handled by FirebaseService
     };
   }
@@ -102,6 +123,18 @@ class UserModel extends Equatable {
       updatedAt:
           json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       customData: json['customData'],
+      watchingMovie:
+          json['watchingMovie'] != null
+              ? (json['watchingMovie'] as List)
+                  .map((movie) => WatchingMovie.fromJson(movie))
+                  .toList()
+              : [],
+      wishlist:
+          json['wishlist'] != null ? List<String>.from(json['wishlist']) : [],
+      searchRecently:
+          json['searchRecently'] != null
+              ? List<String>.from(json['searchRecently'])
+              : [],
     );
   }
 
@@ -120,6 +153,9 @@ class UserModel extends Equatable {
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'customData': customData,
+      'watchingMovie': watchingMovie.map((movie) => movie.toJson()).toList(),
+      'wishlist': wishlist,
+      'searchRecently': searchRecently,
     };
   }
 
@@ -137,6 +173,9 @@ class UserModel extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     Map<String, dynamic>? customData,
+    List<WatchingMovie>? watchingMovie,
+    List<String>? wishlist,
+    List<String>? searchRecently,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -151,6 +190,9 @@ class UserModel extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       customData: customData ?? this.customData,
+      watchingMovie: watchingMovie ?? this.watchingMovie,
+      wishlist: wishlist ?? this.wishlist,
+      searchRecently: searchRecently ?? this.searchRecently,
     );
   }
 
@@ -168,6 +210,23 @@ class UserModel extends Equatable {
     return DateTime.now().difference(createdAt!).inDays;
   }
 
+  // New helper methods for movie-related features
+  bool hasWatchedMovie(String movieId) {
+    return watchingMovie.any((movie) => movie.movieId == movieId);
+  }
+
+  bool isInWishlist(String movieId) {
+    return wishlist.contains(movieId);
+  }
+
+  WatchingMovie? getMovieProgress(String movieId) {
+    try {
+      return watchingMovie.firstWhere((movie) => movie.movieId == movieId);
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   List<Object?> get props => [
     id,
@@ -182,12 +241,94 @@ class UserModel extends Equatable {
     createdAt,
     updatedAt,
     customData,
+    watchingMovie,
+    wishlist,
+    searchRecently,
   ];
 
   @override
   String toString() {
     return 'UserModel(id: $id, email: $email, displayName: $displayName, role: $role)';
   }
+}
+
+// Model for movie recently watched
+class WatchingMovie extends Equatable {
+  final String movieId;
+  final String movieName;
+  final ViewingProgress? viewing;
+
+  const WatchingMovie({
+    required this.movieId,
+    required this.movieName,
+    this.viewing,
+  });
+
+  factory WatchingMovie.fromJson(Map<String, dynamic> json) {
+    return WatchingMovie(
+      movieId: json['movieId'] ?? '',
+      movieName: json['movieName'] ?? '',
+      viewing:
+          json['viewing'] != null
+              ? ViewingProgress.fromJson(json['viewing'])
+              : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'movieId': movieId,
+      'movieName': movieName,
+      'viewing': viewing?.toJson(),
+    };
+  }
+
+  WatchingMovie copyWith({
+    String? movieId,
+    String? movieName,
+    ViewingProgress? viewing,
+  }) {
+    return WatchingMovie(
+      movieId: movieId ?? this.movieId,
+      movieName: movieName ?? this.movieName,
+      viewing: viewing ?? this.viewing,
+    );
+  }
+
+  @override
+  List<Object?> get props => [movieId, movieName, viewing];
+}
+
+// Model for viewing progress (for TV series)
+class ViewingProgress extends Equatable {
+  final String seasonNumber;
+  final String episodeNumber;
+
+  const ViewingProgress({
+    required this.seasonNumber,
+    required this.episodeNumber,
+  });
+
+  factory ViewingProgress.fromJson(Map<String, dynamic> json) {
+    return ViewingProgress(
+      seasonNumber: json['season_number']?.toString() ?? '',
+      episodeNumber: json['episode_number']?.toString() ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'season_number': seasonNumber, 'episode_number': episodeNumber};
+  }
+
+  ViewingProgress copyWith({String? seasonNumber, String? episodeNumber}) {
+    return ViewingProgress(
+      seasonNumber: seasonNumber ?? this.seasonNumber,
+      episodeNumber: episodeNumber ?? this.episodeNumber,
+    );
+  }
+
+  @override
+  List<Object?> get props => [seasonNumber, episodeNumber];
 }
 
 enum UserRole { user, moderator, admin }

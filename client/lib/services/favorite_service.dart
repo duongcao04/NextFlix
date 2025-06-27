@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/favorite_model.dart';
 import '../models/movie_model.dart';
@@ -25,7 +26,7 @@ class FavoriteService {
           .toList()
         ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
     } catch (e) {
-      print('Error loading favorites: $e');
+      debugPrint('Error loading favorites: $e');
       return [];
     }
   }
@@ -64,7 +65,7 @@ class FavoriteService {
         await _saveFavorites(favorites);
       }
     } catch (e) {
-      print('Error adding movie to favorites: $e');
+      debugPrint('Error adding movie to favorites: $e');
     }
   }
 
@@ -90,7 +91,7 @@ class FavoriteService {
         await _saveFavorites(favorites);
       }
     } catch (e) {
-      print('Error adding actor to favorites: $e');
+      debugPrint('Error adding actor to favorites: $e');
     }
   }
 
@@ -101,7 +102,7 @@ class FavoriteService {
       favorites.removeWhere((f) => f.id == favoriteId);
       await _saveFavorites(favorites);
     } catch (e) {
-      print('Error removing from favorites: $e');
+      debugPrint('Error removing from favorites: $e');
     }
   }
 
@@ -112,7 +113,7 @@ class FavoriteService {
       favorites.removeWhere((f) => favoriteIds.contains(f.id));
       await _saveFavorites(favorites);
     } catch (e) {
-      print('Error removing multiple from favorites: $e');
+      debugPrint('Error removing multiple from favorites: $e');
     }
   }
 
@@ -138,7 +139,7 @@ class FavoriteService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_favoritesKey);
     } catch (e) {
-      print('Error clearing favorites: $e');
+      debugPrint('Error clearing favorites: $e');
     }
   }
 
