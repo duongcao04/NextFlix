@@ -6,11 +6,13 @@ import '../widgets/favorite_button.dart';
 class MovieCard extends StatelessWidget {
   final Movie movie;
   final bool showFavoriteButton;
+  final VoidCallback? onUnfavorite; // 👈 callback khi bỏ yêu thích
 
   const MovieCard({
     super.key,
     required this.movie,
     this.showFavoriteButton = true,
+    this.onUnfavorite,
   });
 
   @override
@@ -25,7 +27,6 @@ class MovieCard extends StatelessWidget {
           ),
         );
       },
-
       child: Container(
         width: 120,
         margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -41,6 +42,25 @@ class MovieCard extends StatelessWidget {
                     height: 150,
                     width: 120,
                     fit: BoxFit.cover,
+                    errorBuilder:
+                        (_, __, ___) => Container(
+                          height: 150,
+                          width: 120,
+                          color: Colors.grey,
+                          child: const Icon(
+                            Icons.broken_image,
+                            color: Colors.white,
+                          ),
+                        ),
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) return child;
+                      return Container(
+                        height: 150,
+                        width: 120,
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator(),
+                      );
+                    },
                   ),
                 ),
                 Positioned(
@@ -60,7 +80,7 @@ class MovieCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Thêm nút yêu thích
+                // ❤️ Nút yêu thích
                 if (showFavoriteButton)
                   Positioned(
                     top: 5,
@@ -74,6 +94,7 @@ class MovieCard extends StatelessWidget {
                         movie: movie,
                         size: 20,
                         color: Colors.white,
+                        onUnfavorite: onUnfavorite, // 👈 truyền callback vào
                       ),
                     ),
                   ),

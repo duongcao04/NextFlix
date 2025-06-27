@@ -1,1 +1,25 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"nextflix-1b121","appId":"1:216107978984:android:3fbc81aa0ef8e5641a795d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"nextflix-1b121","configurations":{"android":"1:216107978984:android:3fbc81aa0ef8e5641a795d","ios":"1:216107978984:ios:a9a2acd9d8e5ba1b1a795d","macos":"1:216107978984:ios:a9a2acd9d8e5ba1b1a795d","web":"1:216107978984:web:2d8910c57ae490f11a795d","windows":"1:216107978984:web:4b41d10275a1720a1a795d"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "nextflix-1b121",
+          "appId": "1:216107978984:android:3fbc81aa0ef8e5641a795d",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "nextflix-1b121",
+          "configurations": {
+            "android": "1:216107978984:android:3fbc81aa0ef8e5641a795d",
+            "ios": "1:216107978984:ios:a9a2acd9d8e5ba1b1a795d",
+            "macos": "1:216107978984:ios:a9a2acd9d8e5ba1b1a795d",
+            "web": "1:216107978984:web:2d8910c57ae490f11a795d",
+            "windows": "1:216107978984:web:4b41d10275a1720a1a795d"
+          }
+        }
+      }
+    }
+  }
+}

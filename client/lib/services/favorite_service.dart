@@ -1,163 +1,111 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import '../models/favorite_model.dart';
 import '../models/movie_model.dart';
 
 class FavoriteService {
-  static const String _favoritesKey = 'favorites';
-  static FavoriteService? _instance;
+  static final FavoriteService _instance = FavoriteService._internal();
+  factory FavoriteService() => _instance;
+  static FavoriteService get instance => _instance;
+  FavoriteService._internal();
 
-  FavoriteService._();
+  final _database = FirebaseDatabase.instance;
+  final _auth = FirebaseAuth.instance;
 
-  static FavoriteService get instance {
-    _instance ??= FavoriteService._();
-    return _instance!;
-  }
+  String get userId => _auth.currentUser?.uid ?? '';
 
-  // Lấy danh sách yêu thích
+  DatabaseReference get _favoritesRef =>
+      _database.ref().child('users').child(userId).child('favorites');
+
+  // Lấy tất cả yêu thích
   Future<List<Favorite>> getFavorites() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final favoritesJson = prefs.getStringList(_favoritesKey) ?? [];
-
-      return favoritesJson
-          .map((json) => Favorite.fromJson(jsonDecode(json)))
-          .toList()
-        ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
-    } catch (e) {
-      print('Error loading favorites: $e');
-      return [];
+    final snapshot = await _favoritesRef.get();
+    if (snapshot.exists) {
+      final map = Map<String, dynamic>.from(snapshot.value as Map);
+      return map.entries.map((e) {
+        return Favorite.fromJson(Map<String, dynamic>.from(e.value));
+      }).toList();
     }
+    return [];
   }
 
-  // Lấy danh sách phim yêu thích
+  // Lấy phim yêu thích
   Future<List<Favorite>> getFavoriteMovies() async {
     final favorites = await getFavorites();
     return favorites.where((f) => f.type == FavoriteType.movie).toList();
   }
 
-  // Lấy danh sách diễn viên yêu thích
+  // Lấy diễn viên yêu thích
   Future<List<Favorite>> getFavoriteActors() async {
     final favorites = await getFavorites();
     return favorites.where((f) => f.type == FavoriteType.actor).toList();
   }
 
+  // Kiểm tra phim có trong yêu thích không
+  Future<bool> isMovieFavorite(String movieId) async {
+    final snapshot = await _favoritesRef.child('movie_$movieId').get();
+    return snapshot.exists;
+  }
+
+  // Kiểm tra diễn viên có trong yêu thích không
+  Future<bool> isActorFavorite(String actorId) async {
+    final snapshot = await _favoritesRef.child('actor_$actorId').get();
+    return snapshot.exists;
+  }
+
   // Thêm phim vào yêu thích
   Future<void> addMovieToFavorites(Movie movie) async {
-    try {
-      final favorites = await getFavorites();
+    final id = 'movie_${movie.id}';
+    final ref = _favoritesRef.child(id);
+    final snapshot = await ref.get();
 
-      // Kiểm tra đã có chưa
-      final exists = favorites.any(
-        (f) => f.type == FavoriteType.movie && f.movie?.id == movie.id,
+    if (!snapshot.exists) {
+      final favorite = Favorite(
+        id: id,
+        type: FavoriteType.movie,
+        addedAt: DateTime.now(),
+        movie: movie,
       );
-
-      if (!exists) {
-        final favorite = Favorite(
-          id: 'movie_${movie.id}_${DateTime.now().millisecondsSinceEpoch}',
-          type: FavoriteType.movie,
-          addedAt: DateTime.now(),
-          movie: movie,
-        );
-
-        favorites.insert(0, favorite);
-        await _saveFavorites(favorites);
-      }
-    } catch (e) {
-      print('Error adding movie to favorites: $e');
+      await ref.set(favorite.toJson());
+      print('✅ Added movie to favorites: ${movie.title}');
     }
   }
 
   // Thêm diễn viên vào yêu thích
   Future<void> addActorToFavorites(Actor actor) async {
-    try {
-      final favorites = await getFavorites();
+    final id = 'actor_${actor.id}';
+    final ref = _favoritesRef.child(id);
+    final snapshot = await ref.get();
 
-      // Kiểm tra đã có chưa
-      final exists = favorites.any(
-        (f) => f.type == FavoriteType.actor && f.actor?.id == actor.id,
+    if (!snapshot.exists) {
+      final favorite = Favorite(
+        id: id,
+        type: FavoriteType.actor,
+        addedAt: DateTime.now(),
+        actor: actor,
       );
-
-      if (!exists) {
-        final favorite = Favorite(
-          id: 'actor_${actor.id}_${DateTime.now().millisecondsSinceEpoch}',
-          type: FavoriteType.actor,
-          addedAt: DateTime.now(),
-          actor: actor,
-        );
-
-        favorites.insert(0, favorite);
-        await _saveFavorites(favorites);
-      }
-    } catch (e) {
-      print('Error adding actor to favorites: $e');
+      await ref.set(favorite.toJson());
+      print('✅ Added actor to favorites: ${actor.name}');
     }
   }
 
   // Xóa khỏi yêu thích
   Future<void> removeFromFavorites(String favoriteId) async {
-    try {
-      final favorites = await getFavorites();
-      favorites.removeWhere((f) => f.id == favoriteId);
-      await _saveFavorites(favorites);
-    } catch (e) {
-      print('Error removing from favorites: $e');
-    }
+    await _favoritesRef.child(favoriteId).remove();
+    print('✅ Removed from favorites: $favoriteId');
   }
 
-  // Xóa nhiều khỏi yêu thích
+  // Xóa nhiều mục khỏi yêu thích
   Future<void> removeMultipleFromFavorites(List<String> favoriteIds) async {
-    try {
-      final favorites = await getFavorites();
-      favorites.removeWhere((f) => favoriteIds.contains(f.id));
-      await _saveFavorites(favorites);
-    } catch (e) {
-      print('Error removing multiple from favorites: $e');
+    for (final id in favoriteIds) {
+      await _favoritesRef.child(id).remove();
     }
+    print('✅ Removed ${favoriteIds.length} items from favorites');
   }
 
-  // Kiểm tra phim có trong yêu thích không
-  Future<bool> isMovieFavorite(String movieId) async {
-    final favorites = await getFavorites();
-    return favorites.any(
-      (f) => f.type == FavoriteType.movie && f.movie?.id == movieId,
-    );
-  }
-
-  // Kiểm tra diễn viên có trong yêu thích không
-  Future<bool> isActorFavorite(String actorId) async {
-    final favorites = await getFavorites();
-    return favorites.any(
-      (f) => f.type == FavoriteType.actor && f.actor?.id == actorId,
-    );
-  }
-
-  // Xóa toàn bộ yêu thích
+  // Xóa tất cả yêu thích
   Future<void> clearAllFavorites() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_favoritesKey);
-    } catch (e) {
-      print('Error clearing favorites: $e');
-    }
-  }
-
-  // Tìm kiếm trong yêu thích
-  Future<List<Favorite>> searchFavorites(String query) async {
-    final favorites = await getFavorites();
-
-    if (query.isEmpty) return favorites;
-
-    return favorites.where((f) {
-      return f.title.toLowerCase().contains(query.toLowerCase()) ||
-          f.subtitle.toLowerCase().contains(query.toLowerCase());
-    }).toList();
-  }
-
-  // Lưu danh sách yêu thích
-  Future<void> _saveFavorites(List<Favorite> favorites) async {
-    final prefs = await SharedPreferences.getInstance();
-    final favoritesJson = favorites.map((f) => jsonEncode(f.toJson())).toList();
-    await prefs.setStringList(_favoritesKey, favoritesJson);
+    await _favoritesRef.remove();
+    print('🗑️ Cleared all favorites');
   }
 }
