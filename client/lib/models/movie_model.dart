@@ -127,7 +127,7 @@ class Movie {
       season: json['latest_season'] ?? 1,
       episode: json['cw']?['episode_number'] ?? 1,
       latestEpisode: 'N/A',
-      releaseDate: json['release_date'],
+      releaseDate: json['release_date'] ?? "",
       type: json['type'],
       episodes: episodes,
     );

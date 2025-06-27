@@ -6,13 +6,11 @@ import '../widgets/favorite_button.dart';
 class MovieCard extends StatelessWidget {
   final Movie movie;
   final bool showFavoriteButton;
-  final VoidCallback? onUnfavorite; // 👈 callback khi bỏ yêu thích
 
   const MovieCard({
     super.key,
     required this.movie,
     this.showFavoriteButton = true,
-    this.onUnfavorite,
   });
 
   @override
@@ -94,7 +92,6 @@ class MovieCard extends StatelessWidget {
                         movie: movie,
                         size: 20,
                         color: Colors.white,
-                        onUnfavorite: onUnfavorite, // 👈 truyền callback vào
                       ),
                     ),
                   ),

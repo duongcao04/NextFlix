@@ -8,7 +8,6 @@ class FavoriteButton extends StatefulWidget {
   final Actor? actor;
   final double size;
   final Color? color;
-  final VoidCallback? onUnfavorite; // ✅ callback khi bỏ yêu thích
 
   const FavoriteButton({
     super.key,
@@ -16,7 +15,6 @@ class FavoriteButton extends StatefulWidget {
     this.actor,
     this.size = 24,
     this.color,
-    this.onUnfavorite,
   });
 
   @override
@@ -38,34 +36,34 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       final isFavorite = await FavoriteService.instance.isMovieFavorite(
         widget.movie!.id,
       );
-      if (!mounted) return;
+
       setState(() => _isFavorite = isFavorite);
     } else if (widget.actor != null) {
       final isFavorite = await FavoriteService.instance.isActorFavorite(
         widget.actor!.id,
       );
-      if (!mounted) return;
+
       setState(() => _isFavorite = isFavorite);
     }
   }
 
   void _toggleFavorite() async {
     if (_isLoading) return;
-    if (!mounted) return;
+
     setState(() => _isLoading = true);
 
     try {
       if (_isFavorite) {
-        final String favoriteId =
-            widget.movie != null
-                ? 'movie_${widget.movie!.id}'
-                : 'actor_${widget.actor!.id}';
-
-        await FavoriteService.instance.removeFromFavorites(favoriteId);
-
-        // ✅ Gọi callback nếu có
-        widget.onUnfavorite?.call();
+        // Remove from favorites
+        final favorites = await FavoriteService.instance.getFavorites();
+        final favoriteToRemove = favorites.firstWhere(
+          (f) =>
+              (widget.movie != null && f.movie?.id == widget.movie!.id) ||
+              (widget.actor != null && f.actor?.id == widget.actor!.id),
+        );
+        await FavoriteService.instance.removeFromFavorites(favoriteToRemove.id);
       } else {
+        // Add to favorites
         if (widget.movie != null) {
           await FavoriteService.instance.addMovieToFavorites(widget.movie!);
         } else if (widget.actor != null) {
@@ -73,9 +71,9 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         }
       }
 
-      if (!mounted) return;
       setState(() => _isFavorite = !_isFavorite);
 
+      // Show feedback
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -88,7 +86,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         );
       }
     } catch (e) {
-      print('❌ Error toggling favorite: $e');
+      print('Error toggling favorite: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -98,7 +96,6 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         );
       }
     } finally {
-      if (!mounted) return;
       setState(() => _isLoading = false);
     }
   }
