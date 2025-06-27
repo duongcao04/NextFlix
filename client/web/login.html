@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập - NEXTFLIX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-light d-flex justify-content-center align-items-center vh-100">
+
+  <div class="card p-4 shadow" style="width: 320px;">
+    <h4 class="mb-3 text-center">Đăng nhập</h4>
+    
+    <form id="loginForm">
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Nhập email">
+      </div>
+      
+      <!-- Password -->
+      <div class="mb-1">
+        <label for="password" class="form-label">Mật khẩu</label>
+        <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu">
+      </div>
+
+      <!-- Quên mật khẩu -->
+      <div class="mb-3 text-end">
+        <a href="#" class="text-decoration-none small">Quên mật khẩu?</a>
+      </div>
+
+      <!-- Nút đăng nhập -->
+      <button type="submit" class="btn btn-primary w-100 mb-3">Đăng nhập</button>
+    </form>
+
+    <!-- Hoặc đăng nhập bằng -->
+    <div class="text-center mb-2 text-muted">Hoặc đăng nhập bằng</div>
+    
+    <div class="d-grid gap-2 mb-3">
+      <button class="btn btn-outline-danger" id="googleLogin">
+        <i class="fab fa-google me-2"></i> Google
+      </button>
+      
+    </div>
+
+    <!-- Đăng ký -->
+    <div class="text-center">
+      <span class="text-muted">Chưa có tài khoản?</span>
+      <a href="register.html" class="text-decoration-none">Đăng ký ngay</a>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script src="firebase/init.js"></script>
+
+  <!-- Login Script -->
+  <script>
+    // Email & Password Login
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          console.log("Email login thành công:", userCredential.user.email);
+          window.location.href = 'index.html';
+        })
+        .catch((error) => {
+          alert("Sai email hoặc mật khẩu!");
+          console.error(error);
+        });
+    });
+
+    // Google Login
+    document.getElementById('googleLogin').addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          console.log("Google login thành công:", result.user.email);
+          window.location.href = 'index.html';
+        })
+        .catch((error) => {
+          alert("Lỗi đăng nhập Google!");
+          console.error(error);
+        });
+    });
+
+
+  </script>
+</body>
+</html>

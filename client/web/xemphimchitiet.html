@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NEXTFLIX - Xem Phim</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/Auth.css">
+   <link rel="stylesheet" href="css/loading.css">
   <style>
     body {
       margin: 0;
@@ -39,6 +41,14 @@
   </style>
 </head>
 <body>
+    <div id="loadingScreen">
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+      <img src="../assets/images/logo.png" alt="Logo" class="logo-center" />
+    </div>
+    <p class="loading-text">Đang tải dữ liệu từ NEXTFLIX...</p>
+  </div>
+  <div id="mainContent" style="display: none;">
 
 <!-- ✅ Header giống index.html -->
 <header class="header">
@@ -60,6 +70,11 @@
     <div class="search-container">
       <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
     </div>
+    <div id="authContainer" class="auth-container">
+  <button id="loginBtn">Đăng nhập</button>
+  <button id="logoutBtn" style="display: none;">Đăng xuất</button>
+  <span id="userEmail"></span>
+</div>
   </nav>
 </header>
 
@@ -83,6 +98,7 @@
     <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
   </div>
 </footer>
+  </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -164,6 +180,12 @@ document.querySelector('.search-box').addEventListener('keypress', function (e) 
   }
 });
 </script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<!-- Auth Logic -->
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>

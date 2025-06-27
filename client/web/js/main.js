@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+
   function renderMoviesByGenres(genres, movies) {
     const container = document.getElementById('genreSections');
     container.innerHTML = '';
@@ -76,10 +77,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function loadBannersFromFeatured() {
+    
+    const loadingScreen = document.getElementById("loadingScreen");
+  const mainContent = document.getElementById("mainContent");
+
     Promise.all([
       db.ref('movies').once('value'),
       db.ref('featured_movies').once('value')
     ]).then(([movieSnap, featuredSnap]) => {
+      
+  loadingScreen.style.display = "none";
+
+      // Hiện nội dung chính sau khi loader ẩn
+      mainContent.style.display = "block";
       const moviesData = movieSnap.val() || {};
       const featuredData = featuredSnap.val() || [];
 
@@ -152,3 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 });
+
+
+
+

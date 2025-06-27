@@ -6,19 +6,67 @@
   <title>NEXTFLIX - Xem Phim Online Miễn Phí</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/Auth.css">
+  <link rel="stylesheet" href="css/loading.css">
+  <style>
+    .auth-container {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .auth-container button {
+      background-color: #ff3c3c;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .auth-container button:hover {
+      background-color: #ff1f1f;
+    }
+
+    .auth-container #userEmail {
+      color: #fff;
+      font-size: 0.9rem;
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .auth-container img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
 </head>
 
 <body>
+   <div id="loadingScreen">
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+      <img src="../assets/images/logo.png" alt="Logo" class="logo-center" />
+    </div>
+    <p class="loading-text">Đang tải dữ liệu từ NEXTFLIX...</p>
+  </div>
+  <div id="mainContent" style="display: none;">
   <!-- Header -->
   <header class="header">
     <nav class="nav-container">
       <div style="display: flex; align-items: center; gap: 1.5rem;">
-  <a href="index.html" class="logo">NEXTFLIX</a>
-  <div class="genre-dropdown">
-    <button class="genre-btn">Thể loại ▾</button>
-    <ul class="genre-list" id="genreDropdownList"></ul>
-  </div>
-</div>
+        <a href="index.html" class="logo">NEXTFLIX</a>
+        <div class="genre-dropdown">
+          <button class="genre-btn">Thể loại ▾</button>
+          <ul class="genre-list" id="genreDropdownList"></ul>
+        </div>
+      </div>
 
       <ul class="nav-menu">
         <li><a href="index.html">Trang chủ</a></li>
@@ -27,8 +75,16 @@
         <li><a href="hoatHinh.html">Hoạt hình</a></li>
         <li><a href="marvel.html">Marvel</a></li>
       </ul>
+
       <div class="search-container">
         <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
+      </div>
+
+      <!-- Auth -->
+      <div id="authContainer" class="auth-container">
+        <button id="loginBtn">Đăng nhập</button>
+        <button id="logoutBtn" style="display: none;">Đăng xuất</button>
+        <span id="userEmail"></span>
       </div>
     </nav>
   </header>
@@ -73,16 +129,23 @@
       <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
     </div>
   </footer>
+  </div>
+  
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="firebase/init.js"></script>
 
   <!-- SwiperJS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 
+  <!-- Auth Logic -->
+  <script src="js/auth.js"></script>
+  <script src="js/loading.js"></script>
   <!-- Logic chính -->
   <script src="js/main.js"></script>
+
 </body>
 </html>

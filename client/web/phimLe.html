@@ -6,9 +6,19 @@
   <title>Phim Lẻ - NEXTFLIX</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/Auth.css">
+   <link rel="stylesheet" href="css/loading.css">
 </head>
 
 <body>
+    <div id="loadingScreen">
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+      <img src="../assets/images/logo.png" alt="Logo" class="logo-center" />
+    </div>
+    <p class="loading-text">Đang tải dữ liệu từ NEXTFLIX...</p>
+  </div>
+  <div id="mainContent" style="display: none;">
   <header class="header">
     <nav class="nav-container">
       <a href="index.html" class="logo">NEXTFLIX</a>
@@ -22,6 +32,11 @@
       <div class="search-container">
         <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
       </div>
+      <div id="authContainer" class="auth-container">
+  <button id="loginBtn">Đăng nhập</button>
+  <button id="logoutBtn" style="display: none;">Đăng xuất</button>
+  <span id="userEmail"></span>
+</div>
     </nav>
   </header>
 
@@ -47,6 +62,7 @@
       <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
     </div>
   </footer>
+  </div>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -113,5 +129,12 @@
       }
     });
   </script>
+  <!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<!-- Auth Logic -->
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+
 </body>
 </html>

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Thông Tin Phim - NEXTFLIX</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/Auth.css">
+   <link rel="stylesheet" href="css/loading.css">
   <style>
     .movie-banner {
       background-size: cover;
@@ -81,6 +83,14 @@
   </style>
 </head>
 <body>
+    <div id="loadingScreen">
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+      <img src="../assets/images/logo.png" alt="Logo" class="logo-center" />
+    </div>
+    <p class="loading-text">Đang tải dữ liệu từ NEXTFLIX...</p>
+  </div>
+  <div id="mainContent" style="display: none;">
   <header class="header">
     <nav class="nav-container">
       <a href="index.html" class="logo">NEXTFLIX</a>
@@ -90,7 +100,13 @@
         <li><a href="phimBo.html">Phim bộ</a></li>
         <li><a href="hoatHinh.html">Hoạt hình</a></li>
       </ul>
+      <div id="authContainer" class="auth-container">
+  <button id="loginBtn">Đăng nhập</button>
+  <button id="logoutBtn" style="display: none;">Đăng xuất</button>
+  <span id="userEmail"></span>
+</div>
     </nav>
+
   </header>
 
   <main class="main-content">
@@ -120,6 +136,13 @@
       <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
     </div>
   </footer>
+  <div id="loadingScreen">
+  <div class="logo-loading">
+    <img src="../../client/assets/images/logo.png" alt="Loading">
+    <p class="text">Xem Phim Miễn Phí Cực Nhanh, Chất Lượng Cao Và Cập Nhật Liên Tục</p>
+  </div>
+</div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -167,5 +190,12 @@
       `;
     });
   </script>
+  <!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<!-- Auth Logic -->
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+
 </body>
 </html>
