@@ -32,29 +32,20 @@ class Favorite {
     };
   }
 
-  // Create from JSON
   factory Favorite.fromJson(Map<String, dynamic> json) {
-    try {
-      return Favorite(
-        id: json['id'] ?? '',
-        type: FavoriteType.values.firstWhere(
-          (e) => e.name == json['type'],
-          orElse: () => FavoriteType.movie, // fallback
-        ),
-        addedAt: DateTime.tryParse(json['addedAt'] ?? '') ?? DateTime.now(),
-        movie:
-            json['movie'] != null
-                ? Movie.fromJson(Map<String, dynamic>.from(json['movie']))
-                : null,
-        actor:
-            json['actor'] != null
-                ? Actor.fromJson(Map<String, dynamic>.from(json['actor']))
-                : null,
-      );
-    } catch (e) {
-      print('❌ Error parsing Favorite: $e');
-      rethrow;
-    }
+    return Favorite(
+      id: json['id'],
+      type: FavoriteType.values.firstWhere((e) => e.name == json['type']),
+      addedAt: DateTime.parse(json['addedAt']),
+      movie:
+          json['movie'] != null
+              ? Movie.fromJson(Map<String, dynamic>.from(json['movie']))
+              : null,
+      actor:
+          json['actor'] != null
+              ? Actor.fromJson(Map<String, dynamic>.from(json['actor']))
+              : null,
+    );
   }
 
   // Helper getters

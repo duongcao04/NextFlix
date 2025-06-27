@@ -169,7 +169,7 @@ class AuthenticationBloc
           photoURL: firebaseUser.photoURL,
           phoneNumber: firebaseUser.phoneNumber,
           role: UserRole.user,
-          watchingMovie: const [],
+          watchHistory: const [],
           wishlist: const [],
           searchRecently: const [],
           isActive: true,
