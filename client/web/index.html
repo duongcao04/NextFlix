@@ -8,7 +8,78 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/Auth.css">
   <link rel="stylesheet" href="css/loading.css">
+
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: transparent;
+      color: white;
+      transition: all 0.3s ease;
+      padding: 15px 40px;
+      min-height: 50px;
+    }
+
+    .header.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      color: black;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 50px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff3c3c !important; /* Luôn màu đỏ */
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .logo:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+      height: 100%;
+    }
+
+    .nav-menu li a {
+      color: inherit;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-menu li a:hover {
+      opacity: 0.7;
+    }
+
     .auth-container {
       display: flex;
       align-items: center;
@@ -23,20 +94,22 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     .auth-container button:hover {
       background-color: #ff1f1f;
+      transform: translateY(-1px);
     }
 
     .auth-container #userEmail {
-      color: #fff;
+      color: inherit;
       font-size: 0.9rem;
       max-width: 150px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color 0.3s ease;
     }
 
     .auth-container img {
@@ -45,92 +118,82 @@
       border-radius: 50%;
       object-fit: cover;
     }
+
+    .main-content {
+      margin-top: 80px;
+    }
   </style>
 </head>
 
 <body>
-   <div id="loadingScreen">
+  <!-- Loading -->
+  <div id="loadingScreen">
     <div class="loader-wrapper">
       <div class="loader"></div>
       <img src="../assets/images/logo.png" alt="Logo" class="logo-center" />
     </div>
     <p class="loading-text">Đang tải dữ liệu từ NEXTFLIX...</p>
   </div>
+
+  <!-- Nội dung chính -->
   <div id="mainContent" style="display: none;">
-  <!-- Header -->
-  <header class="header">
-    <nav class="nav-container">
-      <div style="display: flex; align-items: center; gap: 1.5rem;">
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav-container">
         <a href="index.html" class="logo">NEXTFLIX</a>
-        <div class="genre-dropdown">
-          <button class="genre-btn">Thể loại ▾</button>
-          <ul class="genre-list" id="genreDropdownList"></ul>
+
+        <ul class="nav-menu">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="phimLe.html">Phim lẻ</a></li>
+          <li><a href="phimBo.html">Phim bộ</a></li>
+          <li><a href="hoatHinh.html">Hoạt hình</a></li>
+          <li><a href="marvel.html">Marvel</a></li>
+        </ul>
+
+        <div class="auth-container">
+          <button id="loginBtn">Đăng nhập</button>
+          <button id="logoutBtn" style="display: none;">Đăng xuất</button>
+          <span id="userEmail"></span>
         </div>
+      </nav>
+    </header>
+
+    <!-- Nội dung -->
+    <main class="main-content">
+      <div class="container">
+        <section class="banner-carousel">
+          <div class="swiper mySwiper">
+            <div class="swiper-wrapper" id="bannerWrapper"></div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Bạn đang quan tâm gì?</h2>
+          <div class="topic-grid" id="topicContainer"></div>
+        </section>
+
+        <section class="section" id="genreSections">
+          <h2 class="section-title">Thể loại nổi bật</h2>
+          <!-- Render phim -->
+        </section>
       </div>
+    </main>
 
-      <ul class="nav-menu">
-        <li><a href="index.html">Trang chủ</a></li>
-        <li><a href="phimLe.html">Phim lẻ</a></li>
-        <li><a href="phimBo.html">Phim bộ</a></li>
-        <li><a href="hoatHinh.html">Hoạt hình</a></li>
-        <li><a href="marvel.html">Marvel</a></li>
-      </ul>
-
-      <div class="search-container">
-        <input type="text" class="search-box" placeholder="Tìm kiếm phim...">
-      </div>
-
-      <!-- Auth -->
-      <div id="authContainer" class="auth-container">
-        <button id="loginBtn">Đăng nhập</button>
-        <button id="logoutBtn" style="display: none;">Đăng xuất</button>
-        <span id="userEmail"></span>
-      </div>
-    </nav>
-  </header>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="container">
-
-      <!-- Banner -->
-      <section class="banner-carousel">
-        <div class="swiper mySwiper">
-          <div class="swiper-wrapper" id="bannerWrapper"></div>
-          <div class="swiper-pagination"></div>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#">Về chúng tôi</a>
+          <a href="#">Liên hệ</a>
+          <a href="#">Chính sách</a>
+          <a href="#">DMCA</a>
         </div>
-      </section>
-
-      <!-- Chủ đề -->
-      <section class="section">
-        <h2 class="section-title">Bạn đang quan tâm gì?</h2>
-        <div class="topic-grid" id="topicContainer"></div>
-      </section>
-
-      <!-- Thể loại -->
-      <section class="section" id="genreSections">
-        <h2 class="section-title">Thể loại nổi bật</h2>
-        <!-- các phần phim sẽ được render tại đây bởi main.js -->
-      </section>
-
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-links">
-        <a href="#">Về chúng tôi</a>
-        <a href="#">Liên hệ</a>
-        <a href="#">Chính sách</a>
-        <a href="#">DMCA</a>
+        <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
+        <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
       </div>
-      <p>&copy; 2024 NEXTFLIX. Tất cả quyền được bảo lưu.</p>
-      <p>Chúng tôi không lưu trữ bất kỳ tệp nào trên máy chủ của chúng tôi.</p>
-    </div>
-  </footer>
+    </footer>
   </div>
-  
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -144,8 +207,28 @@
   <!-- Auth Logic -->
   <script src="js/auth.js"></script>
   <script src="js/loading.js"></script>
-  <!-- Logic chính -->
   <script src="js/main.js"></script>
 
+  <!-- Scroll Logic -->
+  <script>
+    let isScrolling = false;
+
+    function handleScroll() {
+      if (!isScrolling) {
+        window.requestAnimationFrame(() => {
+          const header = document.querySelector('.header');
+          if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+          isScrolling = false;
+        });
+        isScrolling = true;
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  </script>
 </body>
 </html>

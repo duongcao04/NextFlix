@@ -1,0 +1,25 @@
+  <main class="main-content">
+      <div class="container">
+        <section class="banner-carousel">
+          <div class="swiper mySwiper">
+            <div class="swiper-wrapper" id="bannerWrapper"></div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Bạn đang quan tâm gì?</h2>
+          <div class="topic-grid" id="topicContainer"></div>
+        </section>
+
+        <section class="section" id="genreSections">
+          <h2 class="section-title">Thể loại nổi bật</h2>
+          <!-- Render phim -->
+        </section>
+
+        <!-- Demo content để test scroll -->
+        <section class="section" style="height: 200vh; background: linear-gradient(45deg, #1a1a1a, #333);">
+          <h2 style="color: white; text-align: center; padding: 50px;">Nội dung demo để test scroll effect</h2>
+        </section>
+      </div>
+    </main>
